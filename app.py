@@ -74,11 +74,19 @@ def room_create(id_home):
     return create_room(id_home)
 
 # Ruta para obtener todas las habitaciones
-@app.route('/room/<id_home>', methods=['GET'])
+@app.route('/rooms/<id_home>', methods=['GET'])
 
 # Método para obtener todas las habitaciones
 def room_get_all_rooms(id_home):
-    return get_rooms(id_home)
+    return get_all_rooms(id_home)
+
+
+# Ruta para obtener una habitación
+@app.route('/room/<id_home>', methods=['GET'])
+
+# Método para obtener una habitación
+def room_get_one_room(id_home):
+    return get_one_room(id_home)
 """ -------------------- ROOM - END -------------------- """
 
 
