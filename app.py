@@ -4,6 +4,7 @@ from flask_pymongo import PyMongo
 from flask_cors import CORS
 
 from home import *
+from room import *
 
 # Ejecutar aplicación Flask
 app = Flask(__name__)
@@ -27,16 +28,24 @@ def home_create():
 @app.route('/home', methods=['GET'])
 
 # Método para obtener los hogares
-def home_get_homes():
+def home_get_all_homes():
     return get_homes()
 
 
-# Ruta para obtener un hogar
+# Ruta para obtener los hogares, filtrando por descripción
+@app.route('/home/description', methods=['GET'])
+
+# Método para obtener los hogares, filtrando por descripción
+def home_get_homes_by_description():
+    return get_homes_by_description()
+
+
+# Ruta para obtener un hogar , filtrando por _id
 @app.route('/home/<id>', methods=['GET'])
 
-# Método para obtener un hogar
-def home_get_home(id):
-    return get_home(id)
+# Método para obtener un hogar , filtrando por _id
+def home_get_home_by_id(id):
+    return get_home_by_id(id)
 
 
 # Ruta para eliminar un hogar
@@ -54,6 +63,23 @@ def home_delete_home(id):
 def home_update_home(id):
     return update_home(id)
 """ -------------------- HOME - END -------------------- """
+
+
+""" -------------------- ROOM - START -------------------- """
+# Ruta para crear una habitación
+@app.route('/room/<id_home>', methods=['POST'])
+
+# Método para crear una habitación
+def room_create(id_home):
+    return create_room(id_home)
+
+# Ruta para obtener todas las habitaciones
+@app.route('/room/<id_home>', methods=['GET'])
+
+# Método para obtener todas las habitaciones
+def room_get_all_rooms(id_home):
+    return get_rooms(id_home)
+""" -------------------- ROOM - END -------------------- """
 
 
 # Ruta para controlar errores

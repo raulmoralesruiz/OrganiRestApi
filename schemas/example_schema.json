@@ -1,0 +1,315 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "_id": {
+                "$oid": "60dcc5861b8acb7f95d4cf97"
+            },
+            "description": "piso sevilla",
+            "address": "avenida las ciencias",
+            "rooms": [
+                {
+                    "description": "salón",
+                    "floor": 1,
+                    "containers": []
+                },
+                {
+                    "description": "despacho",
+                    "floor": 1,
+                    "containers": [
+                        {
+                            "description": "cajonera izquierda",
+                            "compartments": [
+                                {
+                                    "description": "primer cajón",
+                                    "row": 1,
+                                    "column": "A",
+                                    "articles": [
+                                        {
+                                            "_id": {
+                                                "$oid": "60dccxx_ID_mando_xbox"
+                                            },
+                                            "description": "mando xbox",
+                                            "color": "negro",
+                                            "brand": "microsoft",
+                                            "model": "series x",
+                                            "group": "mando xbox",
+                                            "price": 45,
+                                            "store_link": "www...",
+                                            "serial_number": "abc123abc",
+                                            "purchase_date": "12/03/2021",
+                                            "warranty_years": 2,
+                                            "package": "60dccxx_ID_CAJA_mando_xbox"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "description": "segundo cajón",
+                                    "row": 2,
+                                    "column": "A",
+                                    "articles": []
+                                },
+                                {
+                                    "description": "tercer y último cajón",
+                                    "row": 3,
+                                    "column": "A",
+                                    "articles": []
+                                }
+                            ]
+                        },
+                        {
+                            "description": "armario izquierdo",
+                            "compartments": [
+                                {
+                                    "description": "parte izquierda",
+                                    "row": 1,
+                                    "column": "A",
+                                    "articles": [
+                                        {
+                                            "_id": {
+                                                "$oid": "60dccxx_ID_CAJA_mando_xbox"
+                                            },
+                                            "description": "caja mando xbox",
+                                            "color": "white",
+                                            "brand": "microsoft",
+                                            "model": "series x",
+                                            "group": "mando xbox",
+                                            "price": 0,
+                                            "store_link": "",
+                                            "serial_number": "",
+                                            "purchase_date": "",
+                                            "warranty_years": 0,
+                                            "package": ""
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "description": "bedroom",
+                            "floor": 1
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "required": [
+        "_id",
+        "description",
+        "address",
+        "rooms"
+    ],
+    "properties": {
+        "_id": {
+            "$id": "#/properties/_id",
+            "type": "object",
+            "title": "The _id schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "$oid": "60dcc5861b8acb7f95d4cf97"
+                }
+            ],
+            "required": [
+                "$oid"
+            ],
+            "properties": {
+                "$oid": {
+                    "$id": "#/properties/_id/properties/%24oid",
+                    "type": "string",
+                    "title": "The $oid schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "60dcc5861b8acb7f95d4cf97"
+                    ]
+                }
+            },
+            "additionalProperties": true
+        },
+        "description": {
+            "$id": "#/properties/description",
+            "type": "string",
+            "title": "The description schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "piso sevilla"
+            ]
+        },
+        "address": {
+            "$id": "#/properties/address",
+            "type": "string",
+            "title": "The address schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "avenida las ciencias"
+            ]
+        },
+        "rooms": {
+            "$id": "#/properties/rooms",
+            "type": "array",
+            "title": "The rooms schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "description": "salón",
+                        "floor": 1,
+                        "containers": []
+                    },
+                    {
+                        "description": "despacho",
+                        "floor": 1,
+                        "containers": [
+                            {
+                                "description": "cajonera izquierda",
+                                "compartments": [
+                                    {
+                                        "description": "primer cajón",
+                                        "row": 1,
+                                        "column": "A",
+                                        "articles": [
+                                            {
+                                                "_id": {
+                                                    "$oid": "60dccxx_ID_mando_xbox"
+                                                },
+                                                "description": "mando xbox",
+                                                "color": "negro",
+                                                "brand": "microsoft",
+                                                "model": "series x",
+                                                "group": "mando xbox",
+                                                "price": 45,
+                                                "store_link": "www...",
+                                                "serial_number": "abc123abc",
+                                                "purchase_date": "12/03/2021",
+                                                "warranty_years": 2,
+                                                "package": "60dccxx_ID_CAJA_mando_xbox"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "description": "segundo cajón",
+                                        "row": 2,
+                                        "column": "A",
+                                        "articles": []
+                                    },
+                                    {
+                                        "description": "tercer y último cajón",
+                                        "row": 3,
+                                        "column": "A",
+                                        "articles": []
+                                    }
+                                ]
+                            },
+                            {
+                                "description": "armario izquierdo",
+                                "compartments": [
+                                    {
+                                        "description": "parte izquierda",
+                                        "row": 1,
+                                        "column": "A",
+                                        "articles": [
+                                            {
+                                                "_id": {
+                                                    "$oid": "60dccxx_ID_CAJA_mando_xbox"
+                                                },
+                                                "description": "caja mando xbox",
+                                                "color": "white",
+                                                "brand": "microsoft",
+                                                "model": "series x",
+                                                "group": "mando xbox",
+                                                "price": 0,
+                                                "store_link": "",
+                                                "serial_number": "",
+                                                "purchase_date": "",
+                                                "warranty_years": 0,
+                                                "package": ""
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "description": "bedroom",
+                                "floor": 1
+                            }
+                        ]
+                    }
+                ]
+            ],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/rooms/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/rooms/items/anyOf/0",
+                        "type": "object",
+                        "title": "The first anyOf schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": {},
+                        "examples": [
+                            {
+                                "description": "salón",
+                                "floor": 1,
+                                "containers": []
+                            }
+                        ],
+                        "required": [
+                            "description",
+                            "floor",
+                            "containers"
+                        ],
+                        "properties": {
+                            "description": {
+                                "$id": "#/properties/rooms/items/anyOf/0/properties/description",
+                                "type": "string",
+                                "title": "The description schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "salón"
+                                ]
+                            },
+                            "floor": {
+                                "$id": "#/properties/rooms/items/anyOf/0/properties/floor",
+                                "type": "integer",
+                                "title": "The floor schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": 0,
+                                "examples": [
+                                    1
+                                ]
+                            },
+                            "containers": {
+                                "$id": "#/properties/rooms/items/anyOf/0/properties/containers",
+                                "type": "array",
+                                "title": "The containers schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": [],
+                                "examples": [
+                                    []
+                                ],
+                                "additionalItems": true,
+                                "items": {
+                                    "$id": "#/properties/rooms/items/anyOf/0/properties/containers/items"
+                                }
+                            }
+                        },
+                        "additionalProperties": true
+                    }
+                ]
+            }
+        }
+    },
+    "additionalProperties": true
+}
