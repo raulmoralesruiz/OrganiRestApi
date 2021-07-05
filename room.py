@@ -23,98 +23,12 @@ client = MongoClient(
 db = client["organi"]
 
 # Variable para definir un acceso directo al documento de hogares (home)
-db_home = db.home
+db_room = db.room
 
 
 # Método para crear una habitación
 def create_room(id_home):
-    # obtener la lista de habitaciones de un hogar
-    home_rooms = get_home_rooms(id_home)
-    
-    # crear lista insertando las coincidencias del campo descripción 
-    room_exists = list(filter(lambda desc: desc['description'] == request.json['description'], home_rooms))
-
-    # comprobar si la habitación introducida existe. (se busca por el campo description)
-    if len(room_exists) > 0:
-        response = jsonify({'response': 'ERROR. The entered room already exists'})
-        return response
-    
-    """ validar e insertar room """
-    # obtener datos de la petición (datos json)
-    data = request.json
-
-    # validar si el contenido json es válido
-    is_valid_room, msg = validate_json('schemas/schema_room.json', data)
-
-    # si el contenido json no es válido, se muestra respuesta
-    if is_valid_room == False:
-        response = jsonify({
-            'response': 'ERROR. The entered value is not valid',
-            'message': msg})
-        return response
-
-    # Si la habitación no existe, se inserta en la lista de habitaciones
-    db_home.update_one({'_id': ObjectId(id_home)}, {'$push': {'rooms': data}})
-
-    response = jsonify(
-        {
-            'response': 'Room was created successfully',
-            # 'message': msg,
-            'new_room': data['description']
-        })
-    return response
-
-
-# Método para obtener las habitaciones
-def get_all_rooms(id_home):
-    # obtener la lista de habitaciones de un hogar
-    home_rooms = get_home_rooms(id_home)
-    
-    # convertir los datos anteriores, de bson a json
-    response = json_util.dumps(home_rooms)
-    # enviar datos convertidos al cliente
-    return Response(response, mimetype='application/json')
-
-
-# Método para obtener una habitación
-def get_one_room(id_home):
-    # obtener la lista de habitaciones de un hogar
-    home_rooms = get_home_rooms(id_home)
-    
-    # obtener datos de la petición (datos json)
-    data = request.json
-
-    # validar si el contenido json es válido
-    is_valid_room, msg = validate_json('schemas/schema_room_by_desc.json', data)
-
-    # si el contenido json no es válido, se muestra respuesta
-    if is_valid_room == False:
-        response = jsonify({
-            'response': 'ERROR. The entered value is not valid',
-            'message': msg})
-        return response
-
-    # crear lista insertando las coincidencias del campo descripción 
-    room_exists = list(filter(lambda desc: desc['description'] == request.json['description'], home_rooms))
-
-    # Si la búsqueda tiene un solo resultado...
-    if len(room_exists) == 1:
-        # Se guarda ese resultado y se muestra
-        response = jsonify(room_exists[0])
-        return response
-    else:
-        response = jsonify(
-            {
-                'response': 'ERROR. Room not found',
-                # 'message': msg,
-                'room': data['description']
-            })
-        return response
-
-
-# Método auxiliar para obtener la lista de habitaciones de un hogar, a través del id pasado por parámetro
-def get_home_rooms(id_home):
-    """ validar home """
+    """ comprobar id_home """
     # se comprueba si el id introducido es válido
     is_valid_id = bson.ObjectId.is_valid(id_home)
 
@@ -124,15 +38,233 @@ def get_home_rooms(id_home):
         return response
 
     # obtener diccionario 'home' de mongodb (formato bson originalmente)
-    home = db_home.find_one({'_id': ObjectId(id_home)})
+    home = db.home.find_one({'_id': ObjectId(id_home)})
     
     # comprobar si el id pasado por parámetro coincide con algún hogar de la base de datos
     if home == None:
         response = jsonify({'response': 'ERROR. The entered id does not exist.'})
         return response
+
+    """ insertar habitación """
+    # obtener datos de la petición (datos json)
+    data = request.json
+
+    # validar si el contenido json es válido
+    is_valid, msg = validate_json('schemas/schema_room.json', data)
+
+    # si el contenido json no es válido, se muestra respuesta
+    if is_valid == False:
+        response = jsonify({
+            'response': 'ERROR. The value entered is not valid',
+            'message': msg})
+        return response
+
+    # comprobar si la habitación introducida existe. (se busca por el campo description)
+    room_exists = db_room.find_one({'description': request.json['description']})
+
+    # Si la habitación existe (se ha obtenido alguna habitación en la búsqueda)...
+    if room_exists != None:
+        response = jsonify({'response': 'ERROR. The entered room already exists'})
+        return response
+
+    # agregar relación id_home en habitación
+    data["id_home"] = ObjectId(id_home)
+
+    # Si la habitación no existe, se inserta la habitación y se almacena id
+    room_id = str(db_room.insert_one(data).inserted_id)
+
+    response = jsonify(
+        {
+            'response': 'Room was created successfully',
+            # 'message': msg,
+            'new_home': room_id
+        })
+    return response
+
+    """ devolver objeto completo """
+    # pipeline = [{'$lookup':
+    #                 {
+    #                     'from': "home",
+    #                     'localField': "id_home",
+    #                     'foreignField': "_id",
+    #                     'as': "home"
+    #                 }
+    #             },
+    #             {'$unwind': '$home'},
+    #             {'$match': 
+    #                 { 'description' : request.json['description'] }
+    #             }]
+        
+    # cursor = db_room.aggregate(pipeline)
+
+    # response = json_util.dumps(cursor)
+    # return Response(response, mimetype='application/json')
     
-    # devolver lista de diccionarios 'rooms'
-    return home["rooms"]
+
+# Método para obtener las habitaciones con su hogar correspondiente
+def get_room_with_home():
+    # parámetros para aggregate
+    pipeline = [{'$lookup':
+                    {
+                        'from': "home",
+                        'localField': "id_home",
+                        'foreignField': "_id",
+                        'as': "home"
+                    }
+                },
+                {'$unwind': '$home'}]
+
+    # cursor de habitaciones con su hogar
+    cursor = db_room.aggregate(pipeline)
+
+    # convertir los datos anteriores, de bson a json
+    response = json_util.dumps(cursor)
+
+    # se devuelve la respuesta en formato json
+    return Response(response, mimetype='application/json')
+
+
+# Método para obtener las habitaciones
+def get_all_rooms():
+    # obtener datos de mongodb (formato bson originalmente)
+    rooms = db_room.find()
+    
+    # convertir los datos anteriores, de bson a json
+    response = json_util.dumps(rooms)
+
+    # se devuelve la respuesta en formato json
+    return Response(response, mimetype='application/json')
+
+
+# Método para obtener una habitación
+def get_one_room(id):
+    # se comprueba si el id introducido es válido
+    is_valid_id = bson.ObjectId.is_valid(id)
+
+    # si el id introducido no es válido se muestra mensaje de error
+    if not is_valid_id:
+        response = jsonify({'response': 'ERROR. the entered id is not valid.'})
+        return response
+        
+    # obtener datos de mongodb (formato bson originalmente)
+    room = db_room.find_one({'_id': ObjectId(id)})
+
+    if room == None:
+        response = jsonify({'response': 'ERROR. the entered id does not exist.'})
+        return response
+    
+    # convertir los datos anteriores, de bson a json
+    response = json_util.dumps(room)
+    # se devuelve la respuesta en formato json
+    return Response(response, mimetype='application/json')
+
+
+# Método para obtener una habitación filtrando por descripción
+def get_rooms_by_description():
+    # obtener datos de la petición (datos json)
+    data = request.json
+
+    # comprobar si se han introducido datos (body json)
+    if data == None:
+        response = jsonify({'response': 'ERROR. no value has been entered.'})
+        return response
+
+    # validar si el contenido json es válido
+    is_valid, msg = validate_json('schemas/schema_search_by_desc.json', data)
+
+    # si el contenido json no es válido, se muestra respuesta
+    if is_valid == False:
+        response = jsonify({
+            'response': 'ERROR. The value entered is not valid',
+            'message': msg})
+        return response
+
+    # filtro para buscar coincidencias en el campo 'description'
+    filter = {'description': {'$regex': request.json['description']}}
+
+    # se realiza la búsqueda con el filtro anterior
+    query = db_room.find(filter=filter)
+
+    # convertir los datos anteriores, de bson a json
+    response = json_util.dumps(query)
+
+    # se devuelve la respuesta en formato json
+    return Response(response, mimetype='application/json')
+
+
+""" pendiente por hacer, convertir de home a room """
+# Método para eliminar un hogar
+def delete_room(id):
+    # se comprueba si el id introducido es válido
+    is_valid_id = bson.ObjectId.is_valid(id)
+
+    # si el id introducido no es válido se muestra mensaje de error
+    if not is_valid_id:
+        response = jsonify({'response': 'ERROR. the entered id is not valid.'})
+        return response
+        
+    # obtener datos de mongodb (formato bson originalmente)
+    room = db_room.find_one({'_id': ObjectId(id)})
+
+    if room == None:
+        response = jsonify({'response': 'ERROR. the entered id does not exist.'})
+        return response
+
+    db_room.delete_one({'_id': ObjectId(id)})
+    response = jsonify({'response': 'Room1 (' + id + ') was deleted successfully'})
+    return response
+
+
+# Método para actualizar un hogar
+def update_room(id):
+    """ se comprueba el id de la habitación introducido por parámetro """
+    # se comprueba si el id introducido es válido
+    is_valid_id = bson.ObjectId.is_valid(id)
+
+    # si el id introducido no es válido se muestra mensaje de error
+    if not is_valid_id:
+        response = jsonify({'response': 'ERROR. the entered id is not valid.'})
+        return response
+        
+    # obtener datos de mongodb (formato bson originalmente)
+    room = db_room.find_one({'_id': ObjectId(id)})
+
+    if room == None:
+        response = jsonify({'response': 'ERROR. the entered id does not exist.'})
+        return response
+
+    """ actualizar la habitación existente """
+    # obtener datos de la petición (datos json)
+    data = request.json
+
+    # validar si el contenido json es válido
+    is_valid, msg = validate_json('schemas/schema_room.json', data)
+
+    # si el contenido json no es válido, se muestra respuesta
+    if is_valid == False:
+        response = jsonify({
+            'response': 'ERROR. The value entered is not valid',
+            'message': msg})
+        return response
+
+    # comprobar si la habitación introducida existe. (se busca por el campo description)
+    room_exists = db_room.find_one({'description': request.json['description']})
+
+    # Si la habitación existe (obtenida en la búsqueda)...
+    if room_exists != None:
+        response = jsonify({'response': 'ERROR. The room introduced already exists'})
+
+    # db_room.update_one({'_id': ObjectId(id)}, {'$set': data})
+    db_room.update_one({'_id': ObjectId(id)}, {
+                       '$set': {'description': data['description'], 'floor': data['floor']}})
+
+    response = jsonify(
+        {
+            'response': 'Room (' + id + ') was updated successfully',
+            'message': msg
+        })
+        
+    return response
 
 
 # Método auxiliar para validar un schema (POST y PUT)
@@ -156,41 +288,26 @@ def validate_json(urlfile, json_data):
     return True, message
 
 
-# # Método para eliminar un hogar
-# def delete_home(id):
-#     db_home.delete_one({'_id': ObjectId(id)})
-#     response = jsonify({'response': 'Home (' + id + ') was deleted successfully'})
-#     return response
+# """ No funciona """
+# # Método auxiliar para comprobar si es valido el id de la habitación hogar pasada por parámetro
+# def check_room_id(id_room):
+#     print('check_room_id')
 
+#     """ validar room """
+#     # se comprueba si el id introducido es válido
+#     is_valid_id = bson.ObjectId.is_valid(id_room)
 
-# # Método para actualizar un hogar
-# def update_home(id):
-#     # obtener datos de la petición (datos json)
-#     data = request.json
+#     # si el id introducido no es válido se muestra mensaje de error
+#     if not is_valid_id:
+#         response = jsonify({'response': 'ERROR. The entered id is not valid.'})
+#         return response
 
-#     # validar si el contenido json es válido
-#     is_valid, msg = validate_home_json(data)
+#     # obtener diccionario 'room' de mongodb (formato bson originalmente)
+#     room = db_room.find_one({'_id': ObjectId(id_room)})
+    
+#     # comprobar si el id pasado por parámetro coincide con algún hogar de la base de datos
+#     if room == None:
+#         response = jsonify({'response': 'ERROR. The entered id does not exist.'})
+#         return response
 
-#     # comprobar si el hogar introducido existe. (se busca por el campo description)
-#     home_exists = db_home.find_one({'description': request.json['description']})
-
-#     # Si el hogar existe (se ha obtenido algún hogar en la búsqueda)...
-#     if home_exists != None:
-#         response = jsonify({'response': 'ERROR. The home introduced already exists'})
-#     # Si el hogar no existe...
-#     else:
-#         if is_valid:
-#             db_home.update_one({'_id': ObjectId(id)}, {'$set': data})
-
-#             response = jsonify(
-#                 {
-#                     'response': 'Home (' + id + ') was updated successfully',
-#                     'message': msg
-#                 })
-#         else:
-#             response = jsonify(
-#                 {
-#                     'response': 'ERROR. The value entered is not valid',
-#                     'message': msg
-#                 })
-#     return response
+#     return room

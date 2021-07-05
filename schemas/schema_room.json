@@ -14,8 +14,7 @@
     ],
     "required": [
         "description",
-        "floor",
-        "containers"
+        "floor"
     ],
     "properties": {
         "description": {

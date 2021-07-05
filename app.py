@@ -74,19 +74,51 @@ def room_create(id_home):
     return create_room(id_home)
 
 # Ruta para obtener todas las habitaciones
-@app.route('/rooms/<id_home>', methods=['GET'])
+@app.route('/rooms', methods=['GET'])
 
 # Método para obtener todas las habitaciones
-def room_get_all_rooms(id_home):
-    return get_all_rooms(id_home)
+def room_get_all_rooms():
+    return get_all_rooms()
 
 
-# Ruta para obtener una habitación
-@app.route('/room/<id_home>', methods=['GET'])
+# Ruta para obtener una habitación, filtrando por id
+@app.route('/room/<id_room>', methods=['GET'])
 
-# Método para obtener una habitación
-def room_get_one_room(id_home):
-    return get_one_room(id_home)
+# Método para obtener una habitación, filtrando por id
+def room_get_one_room(id_room):
+    return get_one_room(id_room)
+
+
+# Ruta para obtener las habitaciones con su hogar correspondiente
+@app.route('/rooms/home', methods=['GET'])
+
+# Método para obtener las habitaciones con su hogar correspondiente
+def room_get_rooms_with_home():
+    return get_room_with_home()
+
+
+# Ruta para obtener las habitaciones, filtrando por descripción
+@app.route('/room/description', methods=['GET'])
+
+# Método para obtener las habitaciones, filtrando por descripción
+def room_get_rooms_by_description():
+    return get_rooms_by_description()
+
+
+# Ruta para eliminar una habitación, filtrando por id
+@app.route('/room/<id>', methods=['DELETE'])
+
+# Método para eliminar una habitación, filtrando por id
+def room_delete_room(id):
+    return delete_room(id)
+
+
+# Ruta para actualizar una habitación
+@app.route('/room/<id>', methods=['PUT'])
+
+# Método para actualizar una habitación
+def room_update_room(id):
+    return update_room(id)
 """ -------------------- ROOM - END -------------------- """
 
 
