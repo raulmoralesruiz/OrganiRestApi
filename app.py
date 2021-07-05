@@ -5,6 +5,7 @@ from flask_cors import CORS
 
 from home import *
 from room import *
+from container import *
 
 # Ejecutar aplicación Flask
 app = Flask(__name__)
@@ -120,6 +121,64 @@ def room_delete_room(id):
 def room_update_room(id):
     return update_room(id)
 """ -------------------- ROOM - END -------------------- """
+
+
+""" -------------------- CONTAINER - START -------------------- """
+# Ruta para crear un contenedor
+@app.route('/container/<id_room>', methods=['POST'])
+
+# Método para crear un contenedor
+def container_create(id_room):
+    return create_container(id_room)
+
+
+# Ruta para obtener todos los contenedores
+@app.route('/containers', methods=['GET'])
+
+# Método para obtener todos los contenedores
+def container_get_all_containers():
+    return get_all_containers()
+
+
+# Ruta para obtener un contenedor, filtrando por id
+@app.route('/container/<id_container>', methods=['GET'])
+
+# Método para obtener un contenedor, filtrando por id
+def container_get_one_container(id_container):
+    return get_one_container(id_container)
+
+
+# Ruta para obtener los contenedores con su habitación correspondiente
+@app.route('/container/room', methods=['GET'])
+
+# Método para obtener los contenedores con su habitación correspondiente
+def container_get_containers_with_room():
+    return get_container_with_room()
+
+
+# Ruta para obtener los contenedores, filtrando por descripción
+@app.route('/container/description', methods=['GET'])
+
+# Método para obtener los contenedores, filtrando por descripción
+def container_get_containers_by_description():
+    return get_containers_by_description()
+
+
+# Ruta para eliminar un contenedor, filtrando por id
+@app.route('/container/<id>', methods=['DELETE'])
+
+# Método para eliminar un contenedor, filtrando por id
+def container_delete_container(id):
+    return delete_container(id)
+
+
+# Ruta para actualizar una habitación
+@app.route('/container/<id>', methods=['PUT'])
+
+# Método para actualizar una habitación
+def container_update_container(id):
+    return update_container(id)
+""" -------------------- CONTAINER - END -------------------- """
 
 
 # Ruta para controlar errores
