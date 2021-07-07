@@ -7,6 +7,8 @@ from home import *
 from room import *
 from container import *
 from compartment import *
+from item import *
+
 
 # Ejecutar aplicación Flask
 app = Flask(__name__)
@@ -181,6 +183,7 @@ def container_update_container(id):
     return update_container(id)
 """ -------------------- CONTAINER - END -------------------- """
 
+
 """ -------------------- COMPARTMENT - START -------------------- """
 # Ruta para crear un compartimento manualmente
 @app.route('/compartment/<id_container>', methods=['POST'])
@@ -237,6 +240,16 @@ def compartment_delete_compartment(id):
 def compartment_update_compartment(id):
     return update_compartment(id)
 """ -------------------- COMPARTMENT - END -------------------- """
+
+
+""" -------------------- ITEM - START -------------------- """
+# Ruta para crear un artículo
+@app.route('/item/<id_compartment>', methods=['POST'])
+
+# Método para crear un artículo
+def item_create_manual(id_compartment):
+    return create_item(id_compartment)
+""" -------------------- ITEM - END -------------------- """
 
 
 # Ruta para controlar errores
