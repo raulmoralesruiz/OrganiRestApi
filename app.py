@@ -6,6 +6,7 @@ from flask_cors import CORS
 from home import *
 from room import *
 from container import *
+from compartment import *
 
 # Ejecutar aplicación Flask
 app = Flask(__name__)
@@ -179,6 +180,63 @@ def container_delete_container(id):
 def container_update_container(id):
     return update_container(id)
 """ -------------------- CONTAINER - END -------------------- """
+
+""" -------------------- COMPARTMENT - START -------------------- """
+# Ruta para crear un compartimento manualmente
+@app.route('/compartment/<id_container>', methods=['POST'])
+
+# Método para crear un compartimento manualmente
+def compartment_create_manual(id_container):
+    return create_compartment_manual(id_container)
+
+
+# Ruta para obtener todos los contenedores
+@app.route('/compartments', methods=['GET'])
+
+# Método para obtener todos los contenedores
+def container_get_all_compartments():
+    return get_all_compartments()
+
+
+# Ruta para obtener un contenedor, filtrando por id
+@app.route('/compartment/<id_compartment>', methods=['GET'])
+
+# Método para obtener un contenedor, filtrando por id
+def compartment_get_one_compartment(id_compartment):
+    return get_one_compartment(id_compartment)
+
+
+# Ruta para crear un compartimento automáticamente
+@app.route('/compartment/<id_container>/<number_of_rows>/<number_of_columns>', methods=['POST'])
+
+# Método para crear un compartimento automáticamente
+def compartment_create_auto(id_container, number_of_rows, number_of_columns):
+    return create_compartment_auto(id_container, number_of_rows, number_of_columns)
+
+
+# Ruta para obtener los compartimentos con su contenedor correspondiente
+@app.route('/compartment/container', methods=['GET'])
+
+# Método para obtener los compartimentos con su contenedor correspondiente
+def compartment_get_compartments_with_container():
+    return get_compartment_with_container()
+
+
+# Ruta para eliminar un compartimento, filtrando por id
+@app.route('/compartment/<id>', methods=['DELETE'])
+
+# Método para eliminar un compartimento, filtrando por id
+def compartment_delete_compartment(id):
+    return delete_compartment(id)
+
+
+# Ruta para actualizar una habitación
+@app.route('/compartment/<id>', methods=['PUT'])
+
+# Método para actualizar una habitación
+def compartment_update_compartment(id):
+    return update_compartment(id)
+""" -------------------- COMPARTMENT - END -------------------- """
 
 
 # Ruta para controlar errores
