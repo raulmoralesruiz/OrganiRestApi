@@ -249,6 +249,62 @@ def compartment_update_compartment(id):
 # Método para crear un artículo
 def item_create_manual(id_compartment):
     return create_item(id_compartment)
+
+
+# Ruta para obtener todos los artículos
+@app.route('/items', methods=['GET'])
+
+# Método para obtener todos los artículos
+def item_get_all_items():
+    return get_all_items()
+
+
+# Ruta para obtener un contenedor, filtrando por id
+@app.route('/item/<id_item>', methods=['GET'])
+
+# Método para obtener un contenedor, filtrando por id
+def item_get_one_item(id_item):
+    return get_one_item(id_item)
+
+
+# Ruta para obtener los artículos con su compartimento correspondiente
+@app.route('/item/compartment', methods=['GET'])
+
+# Método para obtener los artículos con su compartimento correspondiente
+def item_get_items_with_compartment():
+    return get_item_with_compartment()
+
+
+# Ruta para obtener los artículos, filtrando por descripción
+@app.route('/item/description', methods=['GET'])
+
+# Método para obtener los artículos, filtrando por descripción
+def item_get_items_by_description():
+    return get_items_by_description()
+
+
+# Ruta para eliminar un artículo, filtrando por id
+@app.route('/item/<id>', methods=['DELETE'])
+
+# Método para eliminar un artículo, filtrando por id
+def item_delete_item(id):
+    return delete_item(id)
+
+
+# Ruta para actualizar un artículo
+@app.route('/item/<id>', methods=['PUT'])
+
+# Método para actualizar un artículo
+def item_update_item(id):
+    return update_item(id)
+
+
+# Ruta para actualizar un artículo
+@app.route('/item/<id_item>/<id_package>', methods=['PUT'])
+
+# Método para actualizar un artículo
+def item_add_package_to_item(id_item, id_package):
+    return add_package_to_item(id_item, id_package)
 """ -------------------- ITEM - END -------------------- """
 
 

@@ -103,7 +103,7 @@
             "description": "An explanation about the purpose of this instance.",
             "default": "",
             "examples": [
-                "https://www.amazon.es/gp/product/B01MSJUW16?pf_rd_r=F2N9NY68YMZ4BHYZRRRT&pf_rd_p=c6fa5af0-ec7c-40de-8332-fd1421de4244&pd_rd_r=a5dcd1f7-537a-40ce-8c25-88015bc136c9&pd_rd_w=udBB9&pd_rd_wg=Bl3tN&ref_=pd_gw_unk"
+                "https://www.pccomponentes.com/samsung-galaxy-s20-plus-8-128gb-cosmic-gray-libre"
             ]
         },
         "serial_number": {
@@ -120,10 +120,25 @@
         },
         "purchase_date": {
             "$id": "#/properties/purchase_date",
-            "type": "string",
-            "minLength": 3,
-            "maxLength": 100,
             "title": "The purchase_date schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                ""
+            ]
+        },
+        "creation_date": {
+            "$id": "#/properties/creation_date",
+            "title": "The creation_date schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                ""
+            ]
+        },
+        "package": {
+            "$id": "#/properties/package",
+            "title": "The package schema",
             "description": "An explanation about the purpose of this instance.",
             "default": "",
             "examples": [
