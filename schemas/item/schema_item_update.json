@@ -1,0 +1,140 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "description": "caja mando xbox",
+            "color": "blanco",
+            "brand": "microsoft",
+            "model": "series x",
+            "group": "mando xbox",
+            "price": 50,
+            "store_link": "https://amazon.es/abcd",
+            "serial_number": "4CE0460D0G",
+            "purchase_date": "22/05/2021",
+            "warranty_years": 2
+        }
+    ],
+    "properties": {
+        "description": {
+            "$id": "#/properties/description",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100,
+            "title": "The description schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "caja mando xbox"
+            ]
+        },
+        "color": {
+            "$id": "#/properties/color",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 50,
+            "title": "The color schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "blanco"
+            ]
+        },
+        "brand": {
+            "$id": "#/properties/brand",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 50,
+            "title": "The brand schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "microsoft"
+            ]
+        },
+        "model": {
+            "$id": "#/properties/model",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100,
+            "title": "The model schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "series x"
+            ]
+        },
+        "group": {
+            "$id": "#/properties/group",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100,
+            "title": "The group schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "mando xbox"
+            ]
+        },
+        "price": {
+            "$id": "#/properties/price",
+            "type": "number",
+            "minimum": 0,
+            "title": "The price schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                1
+            ]
+        },
+        "store_link": {
+            "$id": "#/properties/store_link",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 300,
+            "title": "The store_link schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "https://www.pccomponentes.com/samsung-galaxy-s20-plus-8-128gb-cosmic-gray-libre"
+            ]
+        },
+        "serial_number": {
+            "$id": "#/properties/serial_number",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100,
+            "title": "The serial_number schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "4CE0460D0G"
+            ]
+        },
+        "purchase_date": {
+            "$id": "#/properties/purchase_date",
+            "title": "The purchase_date schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                ""
+            ]
+        },
+        "warranty_years": {
+            "$id": "#/properties/warranty_years",
+            "type": "integer",
+            "minimum": 0,
+            "title": "The warranty_years schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 2,
+            "examples": [
+                1
+            ]
+        }
+    },
+    "additionalProperties": false
+}

@@ -248,7 +248,7 @@ def add_package_to_item(id_item, id_package):
     """ actualizar el artículo existente """
     # se crea embalaje (diccionario) para el artículo
     data = { 'package': ObjectId(id_package) }
-    
+
     db_item.update_one({'_id': ObjectId(id_item)}, {'$set': data})
 
     response = jsonify(
@@ -280,33 +280,12 @@ def update_item(id):
         response = jsonify({'response': 'ERROR. the entered id does not exist.'})
         return response
 
-    """ actualizar contenedor existente """
+    """ actualizar artículo existente """
     # obtener datos de la petición (datos json)
     data = request.json
 
-    # date_request_json = db_item.find_one({
-    #     'description': request.json['description'],
-    #     'purchase_date': request.json['purchase_date']})
-        
-    # print('date_request_json')
-    # print(date_request_json)
-
-    # if date_request_json != None:
-    #     # expresión regular para la fecha
-    #     regex_date = "%Y-%m-%d" # "%Y-%m-%d %H:%M:%S"
-
-    #     # control del campo purchase_date
-    #     try:
-    #         date_in_datetime = datetime.strptime(request.json['purchase_date'], regex_date)
-    #     except:
-    #         response = jsonify({'response': 'ERROR. The entered purchase_date is not valid'})
-    #         return response
-
-    #     # modificar el campo purchase_date para insertarlo como datetime
-    #     data["purchase_date"] = date_in_datetime
-
     # validar si el contenido json es válido
-    is_valid, msg = validate_json('schemas/schema_item.json', data)
+    is_valid, msg = validate_json('schemas/item/schema_item_update.json', data)
 
     # si el contenido json no es válido, se muestra respuesta
     if is_valid == False:
@@ -315,26 +294,7 @@ def update_item(id):
             'message': msg})
         return response
 
-    # comprobar si existe. (se busca por el campo description)
-    item_exists = db_item.find_one({'description': request.json['description']})
-
-    # Si existe (obtenida en la búsqueda)...
-    if item_exists != None:
-        response = jsonify({'response': 'ERROR. The item introduced already exists'})
-
-    db_item.update_one({'_id': ObjectId(id)}, {
-                       '$set': {
-                           'description': request.json['description'],
-                           'color': request.json['color'],
-                           'brand': request.json['brand'],
-                           'model': request.json['model'],
-                           'group': request.json['group'],
-                           'price': request.json['price'],
-                           'store_link': request.json['store_link'],
-                           'serial_number': request.json['serial_number'],
-                        #    'purchase_date': request.json['purchase_date'],
-                           'warranty_years': request.json['color'],
-                           }})
+    db_item.update_one({'_id': ObjectId(id)}, {'$set': data})
 
     response = jsonify(
         {
