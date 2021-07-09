@@ -32,7 +32,7 @@ def create_home():
     # si el contenido json no es válido, se muestra respuesta
     if is_valid == False:
         response = jsonify({
-            'response': 'ERROR. The value entered is not valid',
+            'response': 'ERROR. The entered value is not valid',
             'message': msg})
         return response
 
@@ -41,7 +41,7 @@ def create_home():
 
     # Si el hogar existe (se ha obtenido algún hogar en la búsqueda)...
     if home_exists != None:
-        response = jsonify({'response': 'ERROR. The home introduced already exists'})
+        response = jsonify({'response': 'ERROR. The entered home already exists'})
         return response
         
     # Si el hogar no existe, se inserta hogar y se almacena id
@@ -73,20 +73,21 @@ def get_home_by_id(id):
 
     # si el id introducido no es válido se muestra mensaje de error
     if not is_valid_id:
-        response = jsonify({'response': 'ERROR. the entered id is not valid.'})
+        response = jsonify({'response': 'ERROR. The entered id is not valid.'})
         return response
         
     # obtener datos de mongodb (formato bson originalmente)
     home = db_home.find_one({'_id': ObjectId(id)})
 
     if home == None:
-        response = jsonify({'response': 'ERROR. the entered id does not exist.'})
+        response = jsonify({'response': 'ERROR. The entered id does not exist.'})
         return response
-    else:
-        # convertir los datos anteriores, de bson a json
-        response = json_util.dumps(home)
-        # se devuelve la respuesta en formato json
-        return Response(response, mimetype='application/json')
+
+    # convertir los datos anteriores, de bson a json
+    response = json_util.dumps(home)
+    
+    # se devuelve la respuesta en formato json
+    return Response(response, mimetype='application/json')
 
 
 # Método para obtener un hogar filtrando por descripción
@@ -96,16 +97,16 @@ def get_homes_by_description():
 
     # comprobar si se han introducido datos (body json)
     if data == None:
-        response = jsonify({'response': 'ERROR. no value has been entered.'})
+        response = jsonify({'response': 'ERROR. No value has been entered.'})
         return response
 
     # validar si el contenido json es válido
-    is_valid, msg = validate_json('schemas/schema_item.json', data)
+    is_valid, msg = validate_json('schemas/schema_search_by_desc.json', data)
 
     # si el contenido json no es válido, se muestra respuesta
     if is_valid == False:
         response = jsonify({
-            'response': 'ERROR. The value entered is not valid',
+            'response': 'ERROR. The entered value is not valid',
             'message': msg})
         return response
 
@@ -135,28 +136,31 @@ def update_home(id):
     data = request.json
 
     # validar si el contenido json es válido
-    is_valid, msg = validate_json('schemas/schema_item.json', data)
+    is_valid, msg = validate_json('schemas/home/schema_home_update.json', data)
 
-    # comprobar si el hogar introducido existe. (se busca por el campo description)
-    home_exists = db_home.find_one({'description': request.json['description']})
+    # si el contenido json no es válido, se muestra respuesta
+    if is_valid == False:
+        response = jsonify({
+            'response': 'ERROR. The entered value is not valid',
+            'message': msg})
+        return response
 
-    # Si el hogar existe (se ha obtenido algún hogar en la búsqueda)...
-    if home_exists != None:
-        response = jsonify({'response': 'ERROR. The home introduced already exists'})
-    # Si el hogar no existe...
-    else:
-        if is_valid:
-            db_home.update_one({'_id': ObjectId(id)}, {'$set': data})
+    # Se comprueba si en la petición existe 'description'
+    if 'description' in data:
+        # comprobar si existe.
+        home_exists = db_home.find_one({'description': request.json['description']})
 
-            response = jsonify(
-                {
-                    'response': 'Home (' + id + ') was updated successfully',
-                    'message': msg
-                })
-        else:
-            response = jsonify(
-                {
-                    'response': 'ERROR. The value entered is not valid',
-                    'message': msg
-                })
+        # Si existe (se ha obtenido resultado en la búsqueda)...
+        if home_exists != None:
+            response = jsonify({'response': 'ERROR. The entered home already exists'})
+            return response
+
+    # Se actualiza indicando body json (data)
+    db_home.update_one({'_id': ObjectId(id)}, {'$set': data})
+
+    response = jsonify(
+        {
+            'response': 'Home (' + id + ') was updated successfully',
+            'message': msg
+        })
     return response
