@@ -13,8 +13,7 @@
         }
     ],
     "required": [
-        "description",
-        "rooms"
+        "description"
     ],
     "properties": {
         "description": {
@@ -40,20 +39,6 @@
             "examples": [
                 "avenida inventada"
             ]
-        },
-        "rooms": {
-            "$id": "#/properties/rooms",
-            "type": "array",
-            "title": "The rooms schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": [],
-            "examples": [
-                []
-            ],
-            "additionalItems": false,
-            "items": {
-                "$id": "#/properties/rooms/items"
-            }
         }
     },
     "additionalProperties": false

@@ -9,15 +9,11 @@ import json
 import jsonschema
 from jsonschema import validate
 
-# Conexión a servidor MongoDB
-client = MongoClient(
-    host='localhost:27017',  # <-- IP and port go here
-    serverSelectionTimeoutMS=3000,  # 3 second timeout
-    username="test",
-    password="test",
-)
-# client = MongoClient('mongodb://test:test@127.0.0.1:27017/test?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false')
+from common_methods import *
 
+
+# Conexión al servidor MongoDB
+client = link_server()
 
 # Conexión a la base de datos
 db = client["organi"]
@@ -265,26 +261,3 @@ def update_compartment(id):
         })
         
     return response
-
-
-""" Métodos auxiliares/comunes """
-
-# Método auxiliar para validar un schema (POST y PUT)
-def validate_json(urlfile, json_data):
-    """This function loads the given schema available"""
-    with open(urlfile, 'r') as file:
-        schema = json.load(file)
-    
-    """REF: https://json-schema.org/ """
-    # Describe what kind of json you expect.
-    execute_api_schema = schema
-
-    try:
-        validate(instance=json_data, schema=execute_api_schema)
-    except jsonschema.exceptions.ValidationError as err:
-        print(err)
-        err = "Given JSON data is InValid"
-        return False, err
-
-    message = "Given JSON data is Valid"
-    return True, message

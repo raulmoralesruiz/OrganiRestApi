@@ -9,15 +9,10 @@ import json
 import jsonschema
 from jsonschema import validate
 
-# Conexión a servidor MongoDB
-client = MongoClient(
-    host='localhost:27017',  # <-- IP and port go here
-    serverSelectionTimeoutMS=3000,  # 3 second timeout
-    username="test",
-    password="test",
-)
-# client = MongoClient('mongodb://test:test@127.0.0.1:27017/test?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false')
+from common_methods import *
 
+# Conexión al servidor MongoDB
+client = link_server()
 
 # Conexión a la base de datos
 db = client["organi"]
@@ -32,7 +27,7 @@ def create_home():
     data = request.json
 
     # validar si el contenido json es válido
-    is_valid, msg = validate_home_json(data)
+    is_valid, msg = validate_json('schemas/schema_home.json', data)
 
     # si el contenido json no es válido, se muestra respuesta
     if is_valid == False:
@@ -59,28 +54,6 @@ def create_home():
             'new_home': home_id
         })
     return response
-
-
-def get_home_schema():
-    """This function loads the given schema available"""
-    with open('schemas/schema_home.json', 'r') as file:
-        schema = json.load(file)
-    return schema
-
-def validate_home_json(json_data):
-    """REF: https://json-schema.org/ """
-    # Describe what kind of json you expect.
-    execute_api_schema = get_home_schema()
-
-    try:
-        validate(instance=json_data, schema=execute_api_schema)
-    except jsonschema.exceptions.ValidationError as err:
-        print(err)
-        err = "Given JSON data is InValid"
-        return False, err
-
-    message = "Given JSON data is Valid"
-    return True, message
 
 
 # Método para obtener los hogares
@@ -127,7 +100,7 @@ def get_homes_by_description():
         return response
 
     # validar si el contenido json es válido
-    is_valid, msg = validate_home_json(data)
+    is_valid, msg = validate_json('schemas/schema_item.json', data)
 
     # si el contenido json no es válido, se muestra respuesta
     if is_valid == False:
@@ -162,7 +135,7 @@ def update_home(id):
     data = request.json
 
     # validar si el contenido json es válido
-    is_valid, msg = validate_home_json(data)
+    is_valid, msg = validate_json('schemas/schema_item.json', data)
 
     # comprobar si el hogar introducido existe. (se busca por el campo description)
     home_exists = db_home.find_one({'description': request.json['description']})
