@@ -133,6 +133,29 @@ def get_documents_by_description(col):
     return Response(response, mimetype='application/json')
 
 
+# Método para obtener las documentos padre e hijo (Ejemplo: Hogar y habitación)
+def get_father_with_son(col, father):
+    # parámetros para aggregate
+    pipeline = [{'$lookup':
+                    {
+                        'from': str(father),
+                        'localField': "id_" + str(father),
+                        'foreignField': "_id",
+                        'as': str(father)
+                    }
+                },
+                {'$unwind': '$' + str(father)}]
+
+    # cursor de habitaciones con su hogar
+    cursor = col.aggregate(pipeline)
+
+    # convertir los datos anteriores, de bson a json
+    response = json_util.dumps(cursor)
+
+    # se devuelve la respuesta en formato json
+    return Response(response, mimetype='application/json')
+
+
 # Método para eliminar un documento
 def delete_document(id, col, doc_type):
     # se comprueba si el id introducido es válido
