@@ -132,6 +132,7 @@ def get_one_room(id):
     
     # convertir los datos anteriores, de bson a json
     response = json_util.dumps(room)
+    
     # se devuelve la respuesta en formato json
     return Response(response, mimetype='application/json')
 
