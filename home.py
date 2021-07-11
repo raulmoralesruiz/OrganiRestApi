@@ -1,4 +1,3 @@
-from flask import jsonify, request
 from common_methods import *
 
 # Conexión al servidor MongoDB
@@ -10,28 +9,16 @@ db = client["organi"]
 # Colección home
 col = db.home
 
+# Variable que indica el nombre/tipo del documento actual
+doc_type = 'home'
+
 
 # Método para crear un hogar
 def create_home():
-    # se validan los datos de la petición (json)
-    data, res = validate_request_json('schemas/schema_home.json')
-    if res != "ok":
-        return jsonify(res)
-
-    # comprobar si el hogar introducido existe. (buscando por 'description')
-    home_exists = col.find_one({'description': request.json['description']})
-    if home_exists != None:
-        response = jsonify({'response': 'ERROR. The entered home already exists'})
-        return response
-        
-    # Si no existe, se inserta y se almacena id
-    home_id = str(col.insert_one(data).inserted_id)
-
-    response = jsonify({
-        'response': 'Home was created successfully',
-        'new_home': home_id
-    })
-    return response
+    doc_schema = 'schemas/home/schema_home.json'
+    id_father = None
+    doc_type_father = None
+    return insert_document(doc_schema, col, doc_type, id_father, doc_type_father)
 
 
 # Método para obtener los hogares
@@ -51,12 +38,10 @@ def get_homes_by_description():
 
 # Método para eliminar un hogar
 def delete_home(id):
-    doc_type = 'home'
     return delete_document(id, col, doc_type)
 
 
 # Método para actualizar un hogar
 def update_home(id):
-    doc_type = 'home'
     doc_schema_update = 'schemas/home/schema_home_update.json'
     return update_document(id, col, doc_type, doc_schema_update)
