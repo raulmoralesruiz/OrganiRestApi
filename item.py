@@ -20,7 +20,7 @@ client = link_server()
 db = client["organi"]
 
 # Variable para definir un acceso directo al documento de artículoss
-db_item = db.item
+col = db.item
 
 
 # Método para crear un artículo
@@ -74,7 +74,7 @@ def create_item(id_compartment):
         return response
 
     # comprobar si el artículo introducido existe. (se busca por el campo description)
-    item_exists = db_item.find_one({'description': request.json['description']})
+    item_exists = col.find_one({'description': request.json['description']})
 
     # Si el artículo existe (se ha obtenido artículo en la búsqueda)...
     if item_exists != None:
@@ -85,7 +85,7 @@ def create_item(id_compartment):
     data["id_compartment"] = ObjectId(id_compartment)
 
     # Si el artículo no existe, se inserta el artículo y se almacena id
-    item_id = str(db_item.insert_one(data).inserted_id)
+    item_id = str(col.insert_one(data).inserted_id)
 
     response = jsonify(
         {
@@ -98,115 +98,36 @@ def create_item(id_compartment):
 
 # Método para obtener los artículos con su compartimento correspondiente
 def get_item_with_compartment():
-    # parámetros para aggregate
-    pipeline = [{'$lookup':
-                    {
-                        'from': "compartment",
-                        'localField': "id_compartment",
-                        'foreignField': "_id",
-                        'as': "compartment"
-                    }
-                },
-                {'$unwind': '$compartment'}]
-
-    # cursor de artículos con su compartimento
-    cursor = db_item.aggregate(pipeline)
-
-    # convertir los datos anteriores, de bson a json
-    response = json_util.dumps(cursor)
-
-    # se devuelve la respuesta en formato json
-    return Response(response, mimetype='application/json')
+    father = 'compartment'
+    return get_father_with_son(col, father)
 
 
 # Método para obtener los artículos
 def get_all_items():
-    # obtener datos de mongodb (formato bson originalmente)
-    items = db_item.find()
-    
-    # convertir los datos anteriores, de bson a json
-    response = json_util.dumps(items)
-
-    # se devuelve la respuesta en formato json
-    return Response(response, mimetype='application/json')
+    return get_all_documents(col)
 
 
 # Método para obtener un artículo
 def get_one_item(id):
-    # se comprueba si el id introducido es válido
-    is_valid_id = bson.ObjectId.is_valid(id)
-
-    # si el id introducido no es válido se muestra mensaje de error
-    if not is_valid_id:
-        response = jsonify({'response': 'ERROR. the entered id is not valid.'})
-        return response
-        
-    # obtener datos de mongodb (formato bson originalmente)
-    item = db_item.find_one({'_id': ObjectId(id)})
-
-    if item == None:
-        response = jsonify({'response': 'ERROR. the entered id does not exist.'})
-        return response
-    
-    # convertir los datos anteriores, de bson a json
-    response = json_util.dumps(item)
-    # se devuelve la respuesta en formato json
-    return Response(response, mimetype='application/json')
+    return get_one_document(id, col)
 
 
 # Método para obtener artículos filtrando por descripción
 def get_items_by_description():
-    # obtener datos de la petición (datos json)
-    data = request.json
-
-    # comprobar si se han introducido datos (body json)
-    if data == None:
-        response = jsonify({'response': 'ERROR. no value has been entered.'})
-        return response
-
-    # validar si el contenido json es válido
-    is_valid, msg = validate_json('schemas/schema_search_by_desc.json', data)
-
-    # si el contenido json no es válido, se muestra respuesta
-    if is_valid == False:
-        response = jsonify({
-            'response': 'ERROR. The value entered is not valid',
-            'message': msg})
-        return response
-
-    # filtro para buscar coincidencias en el campo 'description'
-    filter = {'description': {'$regex': request.json['description']}}
-
-    # se realiza la búsqueda con el filtro anterior
-    query = db_item.find(filter=filter)
-
-    # convertir los datos anteriores, de bson a json
-    response = json_util.dumps(query)
-
-    # se devuelve la respuesta en formato json
-    return Response(response, mimetype='application/json')
+    return get_documents_by_description(col)
 
 
 # Método para eliminar un compartimento
 def delete_item(id):
-    # se comprueba si el id introducido es válido
-    is_valid_id = bson.ObjectId.is_valid(id)
+    doc_type = 'item'
+    return delete_document(id, col, doc_type)
 
-    # si el id introducido no es válido se muestra mensaje de error
-    if not is_valid_id:
-        response = jsonify({'response': 'ERROR. the entered id is not valid.'})
-        return response
-        
-    # obtener datos de mongodb (formato bson originalmente)
-    item = db_item.find_one({'_id': ObjectId(id)})
 
-    if item == None:
-        response = jsonify({'response': 'ERROR. the entered id does not exist.'})
-        return response
-
-    db_item.delete_one({'_id': ObjectId(id)})
-    response = jsonify({'response': 'Container (' + id + ') was deleted successfully'})
-    return response
+# Método para actualizar un artículo
+def update_item(id):
+    doc_type = 'item'
+    doc_schema_update = 'schemas/item/schema_item_update.json'
+    return update_document(id, col, doc_type, doc_schema_update)
 
 
 # Método para añadir el embalaje (item) a un artículo (otro item)
@@ -230,8 +151,8 @@ def add_package_to_item(id_item, id_package):
         return response
         
     # obtener datos de mongodb (formato bson originalmente)
-    item = db_item.find_one({'_id': ObjectId(id_item)})
-    package = db_item.find_one({'_id': ObjectId(id_package)})
+    item = col.find_one({'_id': ObjectId(id_item)})
+    package = col.find_one({'_id': ObjectId(id_package)})
 
     if item == None:
         response = jsonify({'response': 'ERROR. the entered id_item does not exist.'})
@@ -244,57 +165,12 @@ def add_package_to_item(id_item, id_package):
     # se crea embalaje (diccionario) para el artículo
     data = { 'package': ObjectId(id_package) }
 
-    db_item.update_one({'_id': ObjectId(id_item)}, {'$set': data})
+    col.update_one({'_id': ObjectId(id_item)}, {'$set': data})
 
-    response = jsonify(
-        {
-            'response': 'Container (' + id_item + ') was updated successfully',
-            # 'message': msg,
-            'new_package': id_package
-        })
-        
-    return response
-
-
-
-# Método para actualizar un artículo
-def update_item(id):
-    """ se comprueba el id introducido por parámetro """
-    # se comprueba si el id introducido es válido
-    is_valid_id = bson.ObjectId.is_valid(id)
-
-    # si el id introducido no es válido se muestra mensaje de error
-    if not is_valid_id:
-        response = jsonify({'response': 'ERROR. the entered id is not valid.'})
-        return response
-        
-    # obtener datos de mongodb (formato bson originalmente)
-    item = db_item.find_one({'_id': ObjectId(id)})
-
-    if item == None:
-        response = jsonify({'response': 'ERROR. the entered id does not exist.'})
-        return response
-
-    """ actualizar artículo existente """
-    # obtener datos de la petición (datos json)
-    data = request.json
-
-    # validar si el contenido json es válido
-    is_valid, msg = validate_json('schemas/item/schema_item_update.json', data)
-
-    # si el contenido json no es válido, se muestra respuesta
-    if is_valid == False:
-        response = jsonify({
-            'response': 'ERROR. The value entered is not valid',
-            'message': msg})
-        return response
-
-    db_item.update_one({'_id': ObjectId(id)}, {'$set': data})
-
-    response = jsonify(
-        {
-            'response': 'Container (' + id + ') was updated successfully',
-            'message': msg
-        })
+    response = jsonify({
+        'response': 'container was updated successfully',
+        'new_package': id_package,
+        'item': id_item
+    })
         
     return response

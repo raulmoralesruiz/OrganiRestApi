@@ -1,0 +1,41 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "description": "cajonera derecha",
+            "color": "blanco"
+        }
+    ],
+    "properties": {
+        "description": {
+            "$id": "#/properties/description",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 50,
+            "title": "The description schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "cajonera derecha"
+            ]
+        },
+        "color": {
+            "$id": "#/properties/color",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 50,
+            "title": "The color schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "blanco"
+            ]
+        }
+    },
+    "additionalProperties": false
+}
