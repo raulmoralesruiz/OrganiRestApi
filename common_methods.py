@@ -77,20 +77,10 @@ def get_all_documents(col):
 
 # Método para obtener un documento
 def get_one_document(id, col):
-    # se comprueba si el id introducido es válido
-    is_valid_id = bson.ObjectId.is_valid(id)
-
-    # si el id introducido no es válido se muestra mensaje de error
-    if not is_valid_id:
-        response = jsonify({'response': 'ERROR. the entered id is not valid.'})
-        return response
-        
-    # obtener datos de mongodb (formato bson originalmente)
-    doc = col.find_one({'_id': ObjectId(id)})
-
-    if doc == None:
-        response = jsonify({'response': 'ERROR. the entered id does not exist.'})
-        return response
+    # se comprueba si el documento existe y es válido
+    res, doc = check_document(id, col)
+    if res != 'ok':
+        return jsonify(res)
     
     # convertir los datos anteriores, de bson a json
     response = json_util.dumps(doc)
@@ -142,20 +132,10 @@ def get_father_with_son(col, father):
 
 # Método para eliminar un documento
 def delete_document(id, col, doc_type):
-    # se comprueba si el id introducido es válido
-    is_valid_id = bson.ObjectId.is_valid(id)
-
-    # si el id introducido no es válido se muestra mensaje de error
-    if not is_valid_id:
-        response = jsonify({'response': 'ERROR. the entered id is not valid.'})
-        return response
-        
-    # obtener datos de mongodb (formato bson originalmente)
-    room = col.find_one({'_id': ObjectId(id)})
-
-    if room == None:
-        response = jsonify({'response': 'ERROR. the entered id does not exist.'})
-        return response
+    # se comprueba si el documento existe y es válido
+    res = check_document(id, col)
+    if res != 'ok':
+        return jsonify(res)
 
     col.delete_one({'_id': ObjectId(id)})
     
@@ -169,20 +149,10 @@ def delete_document(id, col, doc_type):
 
 # Método para actualizar un documento
 def update_document(id, col, doc_type, doc_schema_update):
-    # se comprueba el id introducido por parámetro
-    is_valid_id = bson.ObjectId.is_valid(id)
-
-    # si el id introducido no es válido se muestra mensaje de error
-    if not is_valid_id:
-        response = jsonify({'response': 'ERROR. the entered id is not valid.'})
-        return response
-        
-    # obtener datos de mongodb (formato bson originalmente)
-    item = col.find_one({'_id': ObjectId(id)})
-
-    if item == None:
-        response = jsonify({'response': 'ERROR. the entered id does not exist.'})
-        return response
+    # se comprueba si el documento existe y es válido
+    res = check_document(id, col)
+    if res != 'ok':
+        return jsonify(res)
 
     """ actualizar documento """
     # se validan los datos de la petición (json)
@@ -212,8 +182,8 @@ def update_document(id, col, doc_type, doc_schema_update):
 
 # Método para crear un documento
 def create_document(id_father, col_father, doc_type_father, son_schema, col_son, doc_type_son):
-    # se comprueba el documento padre
-    res = check_father_doc(id_father, col_father)
+    # se comprueba si el documento padre existe y es válido
+    res = check_document(id_father, col_father)
     if res != 'ok':
         return jsonify(res)
 
@@ -222,12 +192,13 @@ def create_document(id_father, col_father, doc_type_father, son_schema, col_son,
 
 
 # Método auxiliar de create_document. Comprueba un documento padre
-def check_father_doc(id_father, col_father):
+def check_document(id_doc, col_doc):
     # se comprueba si el id introducido es válido
-    is_valid_id = bson.ObjectId.is_valid(id_father)
+    is_valid_id = bson.ObjectId.is_valid(id_doc)
 
     # respuesta por defecto
     response = "ok"
+    doc = None
 
     # si el id introducido no es válido se muestra mensaje de error
     if not is_valid_id:
@@ -235,19 +206,19 @@ def check_father_doc(id_father, col_father):
             'response': 'The entered id is not valid.',
             'status': 'ERROR',
         }
-        return response
+        return response, doc
 
     # obtener diccionario de mongodb (formato bson originalmente)
-    father = col_father.find_one({'_id': ObjectId(id_father)})
+    doc = col_doc.find_one({'_id': ObjectId(id_doc)})
     
     # comprobar si el id pasado por parámetro coincide con algún documento de la base de datos
-    if father == None:
+    if doc == None:
         response = {
             'response': 'The entered id does not exist.',
             'status': 'ERROR',
         }
 
-    return response
+    return response, doc
 
 
 # Método auxiliar de create_document. Inserta un documento

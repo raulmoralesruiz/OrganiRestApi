@@ -15,6 +15,8 @@ db = client["organi"]
 # Variable para definir un acceso directo al documento de hogares (home)
 col = db.room
 
+# Variable que indica el nombre/tipo del documento actual
+doc_type = 'room'
 
 # Método para crear una habitación
 def create_room(id_home):
@@ -48,12 +50,10 @@ def get_rooms_by_description():
 
 # Método para eliminar una habitación
 def delete_room(id):
-    doc_type = 'room'
     return delete_document(id, col, doc_type)
 
 
 # Método para actualizar un hogar
 def update_room(id):
-    doc_type = 'room'
     doc_schema_update = 'schemas/room/schema_room_update.json'
     return update_document(id, col, doc_type, doc_schema_update)
