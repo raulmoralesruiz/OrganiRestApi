@@ -35,7 +35,6 @@ def validate_json(urlfile, json_data):
     try:
         validate(instance=json_data, schema=execute_api_schema)
     except jsonschema.exceptions.ValidationError as err:
-        print(err)
         err = "Given JSON data is not valid"
         return False, err
 
@@ -133,7 +132,7 @@ def get_father_with_son(col, father):
 # Método para eliminar un documento
 def delete_document(id, col, doc_type):
     # se comprueba si el documento existe y es válido
-    res = check_document(id, col)
+    res, doc = check_document(id, col)
     if res != 'ok':
         return jsonify(res)
 
@@ -150,7 +149,7 @@ def delete_document(id, col, doc_type):
 # Método para actualizar un documento
 def update_document(id, col, doc_type, doc_schema_update):
     # se comprueba si el documento existe y es válido
-    res = check_document(id, col)
+    res, doc = check_document(id, col)
     if res != 'ok':
         return jsonify(res)
 
@@ -183,7 +182,7 @@ def update_document(id, col, doc_type, doc_schema_update):
 # Método para crear un documento
 def create_document(id_father, col_father, doc_type_father, son_schema, col_son, doc_type_son):
     # se comprueba si el documento padre existe y es válido
-    res = check_document(id_father, col_father)
+    res, doc = check_document(id_father, col_father)
     if res != 'ok':
         return jsonify(res)
 
@@ -229,7 +228,12 @@ def insert_document(doc_schema, col, doc_type, id_father, doc_type_father):
         return jsonify(res)
 
     # comprobar si el documento hijo introducido existe. (se busca por el campo description)
-    son_exists = col.find_one({'description': request.json['description']})
+    if doc_type == 'compartment':
+        # son_exists = col.find_one({'row': request.json['row'], 'column': request.json['column']})
+        son_exists = col.find_one({'row': request.json['row'], 'column': request.json['column'], "id_container": ObjectId(id_father)})
+    else:
+        son_exists = col.find_one({'description': request.json['description']})
+    
     if son_exists != None:
         response = jsonify({
             'response': 'The entered ' + doc_type + ' already exists',
@@ -238,7 +242,6 @@ def insert_document(doc_schema, col, doc_type, id_father, doc_type_father):
         return response
 
     if id_father != None:
-        print("entro en if de father")
         # agregar relación id_father en el documento hijo
         data["id_" + str(doc_type_father)] = ObjectId(id_father)
 

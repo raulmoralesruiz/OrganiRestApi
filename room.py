@@ -1,10 +1,5 @@
-from flask import jsonify, request
-
-import bson
-from bson.objectid import ObjectId
 
 from common_methods import *
-
 
 # Conexión al servidor MongoDB
 client = link_server()
@@ -12,18 +7,19 @@ client = link_server()
 # Conexión a la base de datos
 db = client["organi"]
 
-# Variable para definir un acceso directo al documento de hogares (home)
+# Colección room
 col = db.room
 
 # Variable que indica el nombre/tipo del documento actual
 doc_type = 'room'
+
 
 # Método para crear una habitación
 def create_room(id_home):
     col_father = db.home
     doc_type_father = 'home'
     son_schema = 'schemas/room/schema_room.json'
-    doc_type_son = 'room'
+    doc_type_son = doc_type
     return create_document(id_home, col_father, doc_type_father, son_schema, col, doc_type_son)
     
 

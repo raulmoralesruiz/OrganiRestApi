@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify
 
 import bson
 from bson.objectid import ObjectId
@@ -12,64 +12,20 @@ client = link_server()
 # Conexión a la base de datos
 db = client["organi"]
 
-# Variable para definir un acceso directo al documento de compartimentos
+# Colección compartment
 col = db.compartment
+
+# Variable que indica el nombre/tipo del documento actual
+doc_type = 'compartment'
 
 
 # Método para crear un compartimento
 def create_compartment_manual(id_container):
-    """ comprobar id_container """
-    # se comprueba si el id introducido es válido
-    is_valid_id = bson.ObjectId.is_valid(id_container)
-
-    # si el id introducido no es válido se muestra mensaje de error
-    if not is_valid_id:
-        response = jsonify({'response': 'ERROR. The entered id is not valid.'})
-        return response
-
-    # obtener diccionario 'container' de mongodb (formato bson originalmente)
-    container = db.container.find_one({'_id': ObjectId(id_container)})
-    
-    # comprobar si el id pasado por parámetro coincide con algún hogar de la base de datos
-    if container == None:
-        response = jsonify({'response': 'ERROR. The entered id does not exist.'})
-        return response
-
-    """ insertar compartimento """
-    # obtener datos de la petición (datos json)
-    data = request.json
-
-    # validar si el contenido json es válido
-    is_valid, msg = validate_json('schemas/schema_compartment.json', data)
-
-    # si el contenido json no es válido, se muestra respuesta
-    if is_valid == False:
-        response = jsonify({
-            'response': 'ERROR. The value entered is not valid',
-            'message': msg})
-        return response
-
-    # comprobar si el compartimento introducido existe. (se busca por el campo description)
-    compartment_exists = col.find_one({'row': request.json['row'], 'column': request.json['column']})
-
-    # Si el compartimento existe (se ha obtenido compartimento en la búsqueda)...
-    if compartment_exists != None:
-        response = jsonify({'response': 'ERROR. The entered compartment already exists'})
-        return response
-
-    # agregar relación id_container en compartimento
-    data["id_container"] = ObjectId(id_container)
-
-    # Si el compartimento no existe, se inserta el compartimento y se almacena id
-    compartment_id = str(col.insert_one(data).inserted_id)
-
-    response = jsonify(
-        {
-            'response': 'compartment was created successfully',
-            # 'message': msg,
-            'new_compartment': compartment_id
-        })
-    return response
+    col_father = db.container
+    doc_type_father = 'container'
+    son_schema = 'schemas/compartment/schema_compartment.json'
+    doc_type_son = doc_type
+    return create_document(id_container, col_father, doc_type_father, son_schema, col, doc_type_son)
     
 
 # Método para crear un compartimento
@@ -77,52 +33,47 @@ def create_compartment_auto(id_container, number_of_rows, number_of_columns):
     number_of_rows = int(number_of_rows)
     number_of_columns = int(number_of_columns)
 
-    """ comprobar id_container """
-    # se comprueba si el id introducido es válido
-    is_valid_id = bson.ObjectId.is_valid(id_container)
+    col_father = db.container
 
-    # si el id introducido no es válido se muestra mensaje de error
-    if not is_valid_id:
-        response = jsonify({'response': 'ERROR. The entered id is not valid.'})
-        return response
+    # se comprueba si el documento padre existe y es válido
+    res, doc = check_document(id_container, col_father)
+    if res != 'ok':
+        return jsonify(res)
 
-    # obtener diccionario 'container' de mongodb (formato bson originalmente)
-    container = db.container.find_one({'_id': ObjectId(id_container)})
-    
-    # comprobar si el id pasado por parámetro coincide con algún hogar de la base de datos
-    if container == None:
-        response = jsonify({'response': 'ERROR. The entered id does not exist.'})
-        return response
-
-    """ insertar compartimentos """
-    for col in range(number_of_columns):
+    # insertar compartimentos
+    for column in range(number_of_columns):
         for row in range(number_of_rows):
             # comprobar si el compartimento introducido existe.
-            compartment_exists = col.find_one(
-                {'name': "C" + str(col + 1) + "-R" + str(row + 1), "id_container": ObjectId(id_container)})
+            compartment_exists = col.find_one({
+                # 'name': "C" + str(column + 1) + "-R" + str(row + 1),
+                'row': "R" + str(row + 1),
+                'column': "C" + str(column + 1),
+                "id_container": ObjectId(id_container)})
 
             # Si el compartimento existe se muestra mensaje de error
             if compartment_exists != None:
-                response = jsonify({'response': 'ERROR. The entered compartment already exists'})
+                response = jsonify({
+                    'response': 'The entered ' + doc_type + ' already exists',
+                    'status': 'ERROR'
+                })
                 return response
 
             # Se crea cada compartimento
             new_compartment = {
-                "row": "C" + str(col + 1),
-                "column": "R" + str(row + 1),
-                "name": "C" + str(col + 1) + "-R" + str(row + 1),
+                "row": "R" + str(row + 1),
+                "column": "C" + str(column + 1),
+                # "name": "C" + str(column + 1) + "-R" + str(row + 1),
                 "id_container": ObjectId(id_container)
             }
 
             # Si el compartimento no existe se inserta
             col.insert_one(new_compartment)
 
-    response = jsonify(
-        {
-            'response': 'compartment was created successfully',
-            'number_of_columns': number_of_columns,
-            'number_of_rows': number_of_rows,
-        })
+    response = jsonify({
+        'response': doc_type + ' was created successfully',
+        'number_of_columns': number_of_columns,
+        'number_of_rows': number_of_rows,
+    })
     return response
 
 
