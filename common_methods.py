@@ -166,7 +166,7 @@ def update_document(id, col, doc_type, doc_schema_update):
 
         # Si existe (se ha obtenido resultado en la búsqueda)...
         if doc_exists != None:
-            response = jsonify({'response': 'ERROR. The entered home already exists'})
+            response = jsonify({'response': 'ERROR. The entered ' + doc_type + ' already exists'})
             return response
 
     col.update_one({'_id': ObjectId(id)}, {'$set': data})

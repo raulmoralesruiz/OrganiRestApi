@@ -7,7 +7,8 @@ from home import *
 from room import *
 from container import *
 from compartment import *
-from item import *
+# from item import *
+from item_new import *
 
 
 # Ejecutar aplicación Flask
@@ -243,12 +244,20 @@ def compartment_update_compartment(id):
 
 
 """ -------------------- ITEM - START -------------------- """
+# # Ruta para crear un artículo
+# @app.route('/item/<id_compartment>', methods=['POST'])
+
+# # Método para crear un artículo
+# def item_create_manual(id_compartment):
+#     return create_item(id_compartment)
+
+
 # Ruta para crear un artículo
-@app.route('/item/<id_compartment>', methods=['POST'])
+@app.route('/item', methods=['POST'])
 
 # Método para crear un artículo
-def item_create_manual(id_compartment):
-    return create_item(id_compartment)
+def item_create_item():
+    return create_item()
 
 
 # Ruta para obtener todos los artículos
@@ -267,16 +276,16 @@ def item_get_one_item(id_item):
     return get_one_item(id_item)
 
 
-# Ruta para obtener los artículos con su compartimento correspondiente
-@app.route('/item/compartment', methods=['GET'])
+# # Ruta para obtener los artículos con su compartimento correspondiente
+# @app.route('/item/compartment', methods=['GET'])
 
-# Método para obtener los artículos con su compartimento correspondiente
-def item_get_items_with_compartment():
-    return get_item_with_compartment()
+# # Método para obtener los artículos con su compartimento correspondiente
+# def item_get_items_with_compartment():
+#     return get_item_with_compartment()
 
 
 # Ruta para obtener los artículos, filtrando por descripción
-@app.route('/item/description', methods=['GET'])
+@app.route('/item/description', methods=['POST'])
 
 # Método para obtener los artículos, filtrando por descripción
 def item_get_items_by_description():

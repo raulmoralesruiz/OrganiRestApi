@@ -1,0 +1,344 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "description": "caja mando xbox",
+            "color": "blanco",
+            "brand": "microsoft",
+            "model": "series x",
+            "group": "mando xbox",
+            "price": 50,
+            "store_link": "https://amazon.es/abcd",
+            "serial_number": "4CE0460D0G",
+            "purchase_date": "22/05/2021",
+            "warranty_years": 2,
+            "home": {
+                "description": "casa 1",
+                "address": "calle falsa, 123"
+            },
+            "room": {
+                "description": "salón",
+                "floor": 1
+            },
+            "container": {
+                "description": "cajonera izquierda",
+                "color": "blanco"
+            },
+            "compartment": {
+                "row": "R1",
+                "column": "C1"
+            }
+        }
+    ],
+    "required": [
+        "description",
+        "home",
+        "room",
+        "container",
+        "compartment"
+    ],
+    "properties": {
+        "description": {
+            "$id": "#/properties/description",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100,
+            "title": "The description schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "caja mando xbox"
+            ]
+        },
+        "color": {
+            "$id": "#/properties/color",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 50,
+            "title": "The color schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "blanco"
+            ]
+        },
+        "brand": {
+            "$id": "#/properties/brand",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 50,
+            "title": "The brand schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "microsoft"
+            ]
+        },
+        "model": {
+            "$id": "#/properties/model",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100,
+            "title": "The model schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "series x"
+            ]
+        },
+        "group": {
+            "$id": "#/properties/group",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100,
+            "title": "The group schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "mando xbox"
+            ]
+        },
+        "price": {
+            "$id": "#/properties/price",
+            "type": "number",
+            "minimum": 0,
+            "title": "The price schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                1
+            ]
+        },
+        "store_link": {
+            "$id": "#/properties/store_link",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 300,
+            "title": "The store_link schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "https://www.pccomponentes.com/samsung-galaxy-s20-plus-8-128gb-cosmic-gray-libre"
+            ]
+        },
+        "serial_number": {
+            "$id": "#/properties/serial_number",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100,
+            "title": "The serial_number schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "4CE0460D0G"
+            ]
+        },
+        "purchase_date": {
+            "$id": "#/properties/purchase_date",
+            "title": "The purchase_date schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                ""
+            ]
+        },
+        "creation_date": {
+            "$id": "#/properties/purchase_date",
+            "title": "The purchase_date schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                ""
+            ]
+        },
+        "warranty_years": {
+            "$id": "#/properties/warranty_years",
+            "type": "integer",
+            "minimum": 0,
+            "title": "The warranty_years schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 2,
+            "examples": [
+                1
+            ]
+        },
+        "home": {
+            "$id": "#/properties/home",
+            "type": "object",
+            "title": "The home schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "description": "casa 1",
+                    "address": "calle falsa, 123"
+                }
+            ],
+            "required": [
+                "description"
+            ],
+            "properties": {
+                "description": {
+                    "$id": "#/properties/home/properties/description",
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 50,
+                    "title": "The description schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "casa 1"
+                    ]
+                },
+                "address": {
+                    "$id": "#/properties/home/properties/address",
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 50,
+                    "title": "The address schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "calle falsa, 123"
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "room": {
+            "$id": "#/properties/room",
+            "type": "object",
+            "title": "The room schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "description": "salón",
+                    "floor": 1
+                }
+            ],
+            "required": [
+                "description"
+            ],
+            "properties": {
+                "description": {
+                    "$id": "#/properties/room/properties/description",
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 50,
+                    "title": "The description schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "salón"
+                    ]
+                },
+                "floor": {
+                    "$id": "#/properties/room/properties/floor",
+                    "type": "integer",
+                    "minimum": 0,
+                    "title": "The floor schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": 0,
+                    "examples": [
+                        1
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "container": {
+            "$id": "#/properties/container",
+            "type": "object",
+            "title": "The container schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "description": "cajonera izquierda",
+                    "color": "blanco"
+                }
+            ],
+            "required": [
+                "description"
+            ],
+            "properties": {
+                "description": {
+                    "$id": "#/properties/container/properties/description",
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 50,
+                    "title": "The description schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "cajonera izquierda"
+                    ]
+                },
+                "color": {
+                    "$id": "#/properties/container/properties/color",
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 50,
+                    "title": "The color schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "blanco"
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "compartment": {
+            "$id": "#/properties/compartment",
+            "type": "object",
+            "title": "The compartment schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "row": "R1",
+                    "column": "C1"
+                }
+            ],
+            "required": [
+                "row",
+                "column"
+            ],
+            "properties": {
+                "row": {
+                    "$id": "#/properties/compartment/properties/row",
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 2,
+                    "title": "The row schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "R1"
+                    ]
+                },
+                "column": {
+                    "$id": "#/properties/compartment/properties/column",
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 2,
+                    "title": "The column schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "C1"
+                    ]
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "additionalProperties": false
+}
