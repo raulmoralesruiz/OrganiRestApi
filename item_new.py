@@ -29,7 +29,12 @@ def create_item():
 
     # control del campo purchase_date
     try:
-        date_in_datetime = datetime.strptime(request.json['purchase_date'], regex_date)
+        if "purchase_date" in data:
+            # se convierte la fecha string a formato fecha
+            date_in_datetime = datetime.strptime(request.json['purchase_date'], regex_date)
+
+            # modificar el campo purchase_date para insertarlo como datetime
+            data["purchase_date"] = date_in_datetime
     except:
         response = jsonify({
             'response': 'The entered purchase_date is not valid',
@@ -37,14 +42,13 @@ def create_item():
         })
         return response
 
-    # modificar el campo purchase_date para insertarlo como datetime
-    data["purchase_date"] = date_in_datetime
-
     # añadir campo con la fecha de creación
     data['creation_date'] = datetime.strptime(datetime.now().strftime(full_regex_date), full_regex_date)
 
     # validar si el contenido json es válido
     is_valid, msg = validate_json('schemas/item/schema_item_new.json', data)
+    print('type(msg)')
+    print(type(msg))
     print(msg)
 
     # si el contenido json no es válido, se muestra respuesta

@@ -3,6 +3,7 @@ from flask import jsonify, request, Response
 import bson
 from bson import json_util
 from bson.objectid import ObjectId
+from jsonschema.exceptions import ValidationError
 from pymongo import MongoClient
 
 import json
@@ -35,7 +36,8 @@ def validate_json(urlfile, json_data):
     try:
         validate(instance=json_data, schema=execute_api_schema)
     except jsonschema.exceptions.ValidationError as err:
-        err = "Given JSON data is not valid"
+        # err = "Given JSON data is not valid"
+        # err = ValidationError(err.message)
         return False, err
 
     message = "Given JSON data is valid"
@@ -253,3 +255,15 @@ def insert_document(doc_schema, col, doc_type, id_father, doc_type_father):
         'new_' + doc_type : doc_id
     })
     return response
+
+
+def get_section(col, section):
+    # se define cursor con todos los hogares
+    cursor = col.distinct(section)
+
+    # convertir los datos anteriores, de bson a json
+    response = json_util.dumps(cursor)
+
+    # se devuelve la respuesta en formato json
+    return Response(response, mimetype='application/json')
+    
