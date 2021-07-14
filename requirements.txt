@@ -2,6 +2,5 @@ flask
 flask_pymongo
 flask_cors
 jsonschema
-bson
 pymongo
 datetime
