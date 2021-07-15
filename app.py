@@ -21,12 +21,20 @@ CORS(app)
 
 
 """ -------------------- HOME - START -------------------- """
-# Ruta para obtener los hogares
-@app.route('/homes', methods=['GET'])
+# Ruta para obtener todos los contenedores
+@app.route('/homes/description', methods=['GET'])
 
-# Método para obtener los hogares
-def home_get_all_homes():
-    return get_all_homes()
+# Método para obtener todos los contenedores
+def home_get_home_descriptions():
+    return get_home_descriptions()
+
+
+# Ruta para obtener todos los contenedores
+@app.route('/homes/address', methods=['GET'])
+
+# Método para obtener todos los contenedores
+def home_get_home_addresses():
+    return get_home_addresses()
 """ -------------------- HOME - END -------------------- """
 
 

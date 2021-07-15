@@ -13,6 +13,13 @@ col_item = db.item_new
 doc_type = 'home'
 
 
-# Método para obtener los hogares
-def get_all_homes():
-    return get_section(col_item, doc_type)
+# Método para obtener las descripciones de los hogares
+def get_home_descriptions():
+    section = 'home.description'
+    return get_section(col_item, section)
+
+
+# Método para obtener las direcciones de los hogares
+def get_home_addresses():
+    section = 'home.address'
+    return get_section(col_item, section)

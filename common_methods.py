@@ -98,7 +98,7 @@ def get_documents_by_description(col):
         return jsonify(res)
 
     # filtro para buscar coincidencias en el campo 'description'
-    filter = {'description': {'$regex': request.json['description']}}
+    filter = {'description': {'$regex': request.json['description'], '$options': 'i'}}
 
     # se realiza la búsqueda con el filtro anterior
     query = col.find(filter=filter)
