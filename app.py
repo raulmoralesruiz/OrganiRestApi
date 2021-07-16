@@ -13,7 +13,7 @@ from item_new import *
 
 # Ejecutar aplicación Flask
 app = Flask(__name__)
-app.config['MONGO_URI']='mongodb://kirkdax:b*jEeJfM7T*y!X@192.168.1.220:27017/organi?authSource=admin'
+app.config['MONGO_URI']='mongodb://kirkdax:b*jEeJfM7T*y!X@192.168.1.30:27017/organi?authSource=admin'
 mongo = PyMongo(app)
 
 # Deshabilitar errores de CORS en navegadores

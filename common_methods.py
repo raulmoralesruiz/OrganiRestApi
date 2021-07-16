@@ -15,7 +15,7 @@ from jsonschema import validate
 def link_server():
     # Conexión a servidor MongoDB
     client = MongoClient(
-        host='192.168.1.220:27017',  # <-- IP and port go here
+        host='192.168.1.30:27017',  # <-- IP and port go here
         serverSelectionTimeoutMS=3000,  # 3 second timeout
         username="kirkdax",
         password="b*jEeJfM7T*y!X",
