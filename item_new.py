@@ -47,9 +47,6 @@ def create_item():
 
     # validar si el contenido json es válido
     is_valid, msg = validate_json('schemas/item/schema_item_new.json', data)
-    print('type(msg)')
-    print(type(msg))
-    print(msg)
 
     # si el contenido json no es válido, se muestra respuesta
     if is_valid == False:

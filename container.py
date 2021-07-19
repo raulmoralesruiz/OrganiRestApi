@@ -13,18 +13,17 @@ col_item = db.item_new
 doc_type = 'container'
 
 
-# # Método para obtener los contenedores
-# def get_all_containers():
-#     return get_section(col_item, doc_type)
+# Método para obtener las direcciones de los hogares
+def get_all_containers():
+    section = 'container'
 
+    # se obtiene la descripción (nombre) del hogar
+    home = request.json['home']
 
-# Método para obtener las descripciones de los contenedores
-def get_container_descriptions():
-    section = 'container.description'
-    return get_section(col_item, section)
+    # se obtiene la descripción (nombre) de la habitación
+    room = request.json['room']
 
-
-# Método para obtener los colores de los contenedores
-def get_container_colors():
-    section = 'container.color'
-    return get_section(col_item, section)
+    # se define la query
+    query = {'home.description': home, 'room.description': room}
+    
+    return get_section(col_item, section, query)

@@ -36,7 +36,7 @@ def validate_json(urlfile, json_data):
     try:
         validate(instance=json_data, schema=execute_api_schema)
     except jsonschema.exceptions.ValidationError as err:
-        # err = "Given JSON data is not valid"
+        err = "Given JSON data is not valid"
         # err = ValidationError(err.message)
         return False, err
 
@@ -257,9 +257,9 @@ def insert_document(doc_schema, col, doc_type, id_father, doc_type_father):
     return response
 
 
-def get_section(col, section):
+def get_section(col, section, query):
     # se define cursor con todos los hogares
-    cursor = col.distinct(section)
+    cursor = col.distinct(section, query)
 
     # convertir los datos anteriores, de bson a json
     response = json_util.dumps(cursor)

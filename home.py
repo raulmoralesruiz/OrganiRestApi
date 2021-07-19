@@ -14,12 +14,7 @@ doc_type = 'home'
 
 
 # Método para obtener las descripciones de los hogares
-def get_home_descriptions():
-    section = 'home.description'
-    return get_section(col_item, section)
-
-
-# Método para obtener las direcciones de los hogares
-def get_home_addresses():
-    section = 'home.address'
-    return get_section(col_item, section)
+def get_all_homes():
+    section = 'home'
+    query = {}
+    return get_section(col_item, section, query)

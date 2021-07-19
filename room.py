@@ -14,7 +14,14 @@ col_item = db.item_new
 doc_type = 'room'
 
 
-# Método para obtener todas las habitaciones
+# Método para obtener las habitaciones de los hogares
 def get_all_rooms():
-    section = 'room.description'
-    return get_section(col_item, section)
+    section = 'room'
+
+    # se obtiene la descripción (nombre) de la habitación
+    description = request.json['description']
+
+    # se define la query
+    query = {'home.description': description}
+    
+    return get_section(col_item, section, query)
