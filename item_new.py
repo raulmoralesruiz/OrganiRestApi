@@ -180,16 +180,16 @@ def search_item():
     # se crea diccionario desde body json
     data = request.json
 
-    # validar si el contenido json es válido
-    is_valid, msg = validate_json('schemas/item/schema_item_new_update.json', data)
+    # # validar si el contenido json es válido
+    # is_valid, msg = validate_json('schemas/item/schema_item_new_update.json', data)
 
-    # si el contenido json no es válido, se muestra respuesta
-    if is_valid == False:
-        response = jsonify({
-            'response': 'The value entered is not valid',
-            'status': 'ERROR',
-        })
-        return response
+    # # si el contenido json no es válido, se muestra respuesta
+    # if is_valid == False:
+    #     response = jsonify({
+    #         'response': 'The value entered is not valid',
+    #         'status': 'ERROR',
+    #     })
+    #     return response
 
     # se guarda el campo de búsqueda
     field = list(data.keys())[0]
@@ -198,7 +198,7 @@ def search_item():
     value = list(data.values())[0]
 
     # obtener datos de mongodb (formato bson originalmente)
-    item = col.find({field: {'$regex': value}})
+    item = col.find({field: {'$regex': value, '$options': 'i'}})
 
     # convertir los datos anteriores, de bson a json
     response = json_util.dumps(item)
