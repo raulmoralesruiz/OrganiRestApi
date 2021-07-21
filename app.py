@@ -116,6 +116,14 @@ def item_update_item(id):
 # Método para actualizar un artículo
 def item_add_package_to_item(id_item, id_package):
     return add_package_to_item(id_item, id_package)
+
+
+# Ruta para crear un artículo
+@app.route('/item/search', methods=['POST'])
+
+# Método para crear un artículo
+def item_search_item():
+    return search_item()
 """ -------------------- ITEM - END -------------------- """
 
 

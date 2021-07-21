@@ -12,6 +12,7 @@ client = link_server()
 
 # Conexión a la base de datos
 db = client["organi"]
+db_archive = client["organi_archive"]
 
 # Variable para definir un acceso directo al documento de artículoss
 col = db.item_new
@@ -102,7 +103,8 @@ def get_items_by_description():
 # Método para eliminar un compartimento
 def delete_item(id):
     doc_type = 'item'
-    return delete_document(id, col, doc_type)
+    col_archive = db_archive.item_archive
+    return delete_document(id, col, doc_type, col_archive)
 
 
 # Método para actualizar un artículo
@@ -171,3 +173,35 @@ def add_package_to_item(id_item, id_package):
     })
         
     return response
+
+
+# Método para buscar artículo por cualquier campo definido
+def search_item():
+    # se crea diccionario desde body json
+    data = request.json
+
+    # validar si el contenido json es válido
+    is_valid, msg = validate_json('schemas/item/schema_item_new_update.json', data)
+
+    # si el contenido json no es válido, se muestra respuesta
+    if is_valid == False:
+        response = jsonify({
+            'response': 'The value entered is not valid',
+            'status': 'ERROR',
+        })
+        return response
+
+    # se guarda el campo de búsqueda
+    field = list(data.keys())[0]
+
+    # se guarda el valor del campo de búsqueda
+    value = list(data.values())[0]
+
+    # obtener datos de mongodb (formato bson originalmente)
+    item = col.find({field: {'$regex': value}})
+
+    # convertir los datos anteriores, de bson a json
+    response = json_util.dumps(item)
+
+    # se devuelve la respuesta en formato json
+    return Response(response, mimetype='application/json')

@@ -132,12 +132,17 @@ def get_father_with_son(col, father):
 
 
 # Método para eliminar un documento
-def delete_document(id, col, doc_type):
+def delete_document(id, col, doc_type, col_archive):
     # se comprueba si el documento existe y es válido
     res, doc = check_document(id, col)
     if res != 'ok':
         return jsonify(res)
 
+    # se archiva el documento antes de borrarlo
+    doc = col.find_one({'_id': ObjectId(id)})
+    col_archive.insert_one(doc)
+
+    # se borra el documento
     col.delete_one({'_id': ObjectId(id)})
     
     response = jsonify({
