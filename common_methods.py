@@ -173,8 +173,13 @@ def update_document(id, col, doc_type, doc_schema_update):
 
         # Si existe (se ha obtenido resultado en la búsqueda)...
         if doc_exists != None:
-            response = jsonify({'response': 'ERROR. The entered ' + doc_type + ' already exists'})
-            return response
+            # se obtiene id del objeto
+            item_id_in_data = str(doc_exists['_id'])
+
+            # se comprueba si coindice id pasado por parametro e id pasado por body
+            if item_id_in_data != id:
+                response = jsonify({'response': 'ERROR. The entered ' + doc_type + ' already exists'})
+                return response
 
     col.update_one({'_id': ObjectId(id)}, {'$set': data})
 
