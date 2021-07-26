@@ -107,11 +107,75 @@ def delete_item(id):
     return delete_document(id, col, doc_type, col_archive)
 
 
+# # Método para actualizar un artículo
+# def update_item(id):
+#     doc_type = 'item'
+#     doc_schema_update = 'schemas/item/schema_item_new_update.json'
+#     return update_document(id, col, doc_type, doc_schema_update)
+
+
 # Método para actualizar un artículo
 def update_item(id):
-    doc_type = 'item'
-    doc_schema_update = 'schemas/item/schema_item_new_update.json'
-    return update_document(id, col, doc_type, doc_schema_update)
+    """ insertar artículo """
+    # obtener datos de la petición (datos json)
+    data = request.json
+
+    # expresión regular para fechas
+    regex_date = "%Y-%m-%d"
+    full_regex_date = "%Y-%m-%d %H:%M:%S"
+
+    # control del campo purchase_date
+    try:
+        if "purchase_date" in data:
+            # se convierte la fecha string a formato fecha
+            date_in_datetime = datetime.strptime(request.json['purchase_date'], regex_date)
+
+            # modificar el campo purchase_date para insertarlo como datetime
+            data["purchase_date"] = date_in_datetime
+    except:
+        response = jsonify({
+            'response': 'The entered purchase_date is not valid',
+            'status': 'ERROR',
+        })
+        return response
+
+    # añadir campo con la fecha de actualización
+    data['update_date'] = datetime.strptime(datetime.now().strftime(full_regex_date), full_regex_date)
+
+    # validar si el contenido json es válido
+    is_valid, msg = validate_json('schemas/item/schema_item_new_update.json', data)
+
+    # si el contenido json no es válido, se muestra respuesta
+    if is_valid == False:
+        response = jsonify({
+            'response': 'The entered value is not valid',
+            'status': 'ERROR',
+        })
+        return response
+
+    # Se comprueba si en la petición existe 'description'
+    if 'description' in data:
+        # comprobar si existe.
+        doc_exists = col.find_one({'description': request.json['description']})
+
+        # Si existe (se ha obtenido resultado en la búsqueda)...
+        if doc_exists != None:
+            # se obtiene id del objeto
+            item_id_in_data = str(doc_exists['_id'])
+
+            # se comprueba si coindice id pasado por parametro e id pasado por body
+            if item_id_in_data != id:
+                response = jsonify({'response': 'ERROR. The entered item already exists'})
+                return response
+
+    col.update_one({'_id': ObjectId(id)}, {'$set': data})
+
+    response = jsonify({
+        'response': 'Item was updated successfully',
+        'item': id
+    })
+        
+    return response
 
 
 # Método para añadir el embalaje (item) a un artículo (otro item)

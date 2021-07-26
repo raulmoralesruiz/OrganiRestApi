@@ -140,6 +140,15 @@
                 ""
             ]
         },
+        "update_date": {
+            "$id": "#/properties/update_date",
+            "title": "The update_date schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                ""
+            ]
+        },
         "warranty_years": {
             "$id": "#/properties/warranty_years",
             "type": "integer",
