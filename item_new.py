@@ -77,12 +77,6 @@ def create_item():
         'new_item': item_id
     })
     return response
-    
-
-# Método para obtener los artículos con su compartimento correspondiente
-# def get_item_with_compartment():
-#     father = 'compartment'
-#     return get_father_with_son(col, father)
 
 
 # Método para obtener los artículos
@@ -174,7 +168,7 @@ def update_item(id):
         'response': 'Item was updated successfully',
         'item': id
     })
-        
+
     return response
 
 
@@ -206,7 +200,7 @@ def add_package_to_item(id_item, id_package):
             'status': 'ERROR',
         })
         return response
-        
+
     # obtener datos de mongodb (formato bson originalmente)
     item = col.find_one({'_id': ObjectId(id_item)})
     package = col.find_one({'_id': ObjectId(id_package)})
@@ -235,7 +229,7 @@ def add_package_to_item(id_item, id_package):
         'new_package': id_package,
         'item': id_item
     })
-        
+
     return response
 
 
@@ -243,17 +237,6 @@ def add_package_to_item(id_item, id_package):
 def search_item():
     # se crea diccionario desde body json
     data = request.json
-
-    # # validar si el contenido json es válido
-    # is_valid, msg = validate_json('schemas/item/schema_item_new_update.json', data)
-
-    # # si el contenido json no es válido, se muestra respuesta
-    # if is_valid == False:
-    #     response = jsonify({
-    #         'response': 'The value entered is not valid',
-    #         'status': 'ERROR',
-    #     })
-    #     return response
 
     # se guarda el campo de búsqueda
     field = list(data.keys())[0]

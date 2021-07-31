@@ -28,7 +28,7 @@ def validate_json(urlfile, json_data):
     """This function loads the given schema available"""
     with open(urlfile, 'r') as file:
         schema = json.load(file)
-    
+
     """REF: https://json-schema.org/ """
     # Describe what kind of json you expect.
     execute_api_schema = schema
@@ -68,7 +68,7 @@ def validate_request_json(url_jsonschema):
 def get_all_documents(col):
     # obtener datos de mongodb (formato bson originalmente)
     documents = col.find()
-    
+
     # convertir los datos anteriores, de bson a json
     response = json_util.dumps(documents)
 
@@ -82,10 +82,10 @@ def get_one_document(id, col):
     res, doc = check_document(id, col)
     if res != 'ok':
         return jsonify(res)
-    
+
     # convertir los datos anteriores, de bson a json
     response = json_util.dumps(doc)
-    
+
     # se devuelve la respuesta en formato json
     return Response(response, mimetype='application/json')
 
@@ -144,12 +144,12 @@ def delete_document(id, col, doc_type, col_archive):
 
     # se borra el documento
     col.delete_one({'_id': ObjectId(id)})
-    
+
     response = jsonify({
         'response': doc_type + ' was deleted successfully',
         doc_type: id
         })
-    
+
     return response
 
 
@@ -187,7 +187,7 @@ def update_document(id, col, doc_type, doc_schema_update):
         'response': doc_type + ' was updated successfully',
         doc_type: id
     })
-        
+
     return response
 
 
@@ -221,7 +221,7 @@ def check_document(id_doc, col_doc):
 
     # obtener diccionario de mongodb (formato bson originalmente)
     doc = col_doc.find_one({'_id': ObjectId(id_doc)})
-    
+
     # comprobar si el id pasado por parámetro coincide con algún documento de la base de datos
     if doc == None:
         response = {
@@ -245,7 +245,7 @@ def insert_document(doc_schema, col, doc_type, id_father, doc_type_father):
         son_exists = col.find_one({'row': request.json['row'], 'column': request.json['column'], "id_container": ObjectId(id_father)})
     else:
         son_exists = col.find_one({'description': request.json['description']})
-    
+
     if son_exists != None:
         response = jsonify({
             'response': 'The entered ' + doc_type + ' already exists',
@@ -276,4 +276,3 @@ def get_section(col, section, query):
 
     # se devuelve la respuesta en formato json
     return Response(response, mimetype='application/json')
-    

@@ -28,5 +28,5 @@ def get_all_compartments():
 
     # se define la query
     query = {'home.description': home, 'room.description': room, 'container.description': container}
-    
+
     return get_section(col_item, section, query)

@@ -25,5 +25,5 @@ def get_all_containers():
 
     # se define la query
     query = {'home.description': home, 'room.description': room}
-    
+
     return get_section(col_item, section, query)

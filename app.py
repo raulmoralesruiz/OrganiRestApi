@@ -137,26 +137,24 @@ def check_password(password):
         return False
 
 
-@app.route("/test1")
-def test1():
-    item_archive = mongo.db.item_archive.find_one({})
-    response = json_util.dumps(item_archive)
-    return Response(response, mimetype='application/json')
+# @app.route("/test1")
+# def test1():
+#     item_archive = mongo.db.item_archive.find_one({})
+#     response = json_util.dumps(item_archive)
+#     return Response(response, mimetype='application/json')
 
 
-@app.route("/test2")
-@token_required
-def test2():
-    item_archive = mongo.db.item_archive.find_one({})
-    response = json_util.dumps(item_archive)
-    return Response(response, mimetype='application/json')
+# @app.route("/test2")
+# @token_required
+# def test2():
+#     item_archive = mongo.db.item_archive.find_one({})
+#     response = json_util.dumps(item_archive)
+#     return Response(response, mimetype='application/json')
 
 
 """ -------------------- HOME - START -------------------- """
-# Ruta para obtener todos los contenedores
+# Ruta para obtener los hogares
 @app.route('/homes', methods=['GET'])
-
-# Método para obtener todos los contenedores
 @token_required
 def home_get_all_homes():
     return get_all_homes()
@@ -164,99 +162,85 @@ def home_get_all_homes():
 
 
 """ -------------------- ROOM - START -------------------- """
-# Ruta para obtener todas las habitaciones
+# Ruta para obtener las habitaciones
 @app.route('/rooms', methods=['POST'])
-
-# Método para obtener todas las habitaciones
+@token_required
 def room_get_all_rooms():
     return get_all_rooms()
 """ -------------------- ROOM - END -------------------- """
 
 
 """ -------------------- CONTAINER - START -------------------- """
-# Ruta para obtener todas las habitaciones
+# Ruta para obtener los contenedores
 @app.route('/containers', methods=['POST'])
-
-# Método para obtener todas las habitaciones
+@token_required
 def container_get_all_containers():
     return get_all_containers()
 """ -------------------- CONTAINER - END -------------------- """
 
 
 """ -------------------- COMPARTMENT - START -------------------- """
-# Ruta para obtener todas las habitaciones
+# Ruta para obtener los compartimentos
 @app.route('/compartments', methods=['POST'])
-
-# Método para obtener todas las habitaciones
+@token_required
 def compartment_get_all_compartments():
     return get_all_compartments()
 """ -------------------- COMPARTMENT - END -------------------- """
 
 
 """ -------------------- ITEM - START -------------------- """
-# Ruta para crear un artículo
+# crear un artículo
 @app.route('/item', methods=['POST'])
-
-# Método para crear un artículo
+@token_required
 def item_create_item():
     return create_item()
 
 
-# Ruta para obtener todos los artículos
+# obtener todos los artículos
 @app.route('/items', methods=['GET'])
-
-# Método para obtener todos los artículos
 @token_required
 def item_get_all_items():
     return get_all_items()
 
 
-# Ruta para obtener un contenedor, filtrando por id
+# obtener un artículo, filtrando por id
 @app.route('/item/<id_item>', methods=['GET'])
-
-# Método para obtener un contenedor, filtrando por id
+@token_required
 def item_get_one_item(id_item):
     return get_one_item(id_item)
 
 
-
-# Ruta para obtener los artículos, filtrando por descripción
+# obtener los artículos, filtrando por descripción
 @app.route('/item/description', methods=['POST'])
-
-# Método para obtener los artículos, filtrando por descripción
+@token_required
 def item_get_items_by_description():
     return get_items_by_description()
 
 
-# Ruta para eliminar un artículo, filtrando por id
+# eliminar un artículo, filtrando por id
 @app.route('/item/<id>', methods=['DELETE'])
-
-# Método para eliminar un artículo, filtrando por id
+@token_required
 def item_delete_item(id):
     return delete_item(id)
 
 
-# Ruta para actualizar un artículo
+# actualizar un artículo
 @app.route('/item/<id>', methods=['PUT'])
-
-# Método para actualizar un artículo
 @token_required
 def item_update_item(id):
     return update_item(id)
 
 
-# Ruta para actualizar un artículo
+# añadir paquete a un artículo
 @app.route('/item/<id_item>/<id_package>', methods=['PUT'])
-
-# Método para actualizar un artículo
+@token_required
 def item_add_package_to_item(id_item, id_package):
     return add_package_to_item(id_item, id_package)
 
 
-# Ruta para crear un artículo
+# Ruta para realizar búsqueda avanzada de un artículo
 @app.route('/item/search', methods=['POST'])
-
-# Método para crear un artículo
+@token_required
 def item_search_item():
     return search_item()
 """ -------------------- ITEM - END -------------------- """
