@@ -137,21 +137,6 @@ def check_password(password):
         return False
 
 
-# @app.route("/test1")
-# def test1():
-#     item_archive = mongo.db.item_archive.find_one({})
-#     response = json_util.dumps(item_archive)
-#     return Response(response, mimetype='application/json')
-
-
-# @app.route("/test2")
-# @token_required
-# def test2():
-#     item_archive = mongo.db.item_archive.find_one({})
-#     response = json_util.dumps(item_archive)
-#     return Response(response, mimetype='application/json')
-
-
 """ -------------------- HOME - START -------------------- """
 # Ruta para obtener los hogares
 @app.route('/homes', methods=['GET'])

@@ -10,17 +10,12 @@ import json
 import jsonschema
 from jsonschema import validate
 
+from keys import mongo_uri
+
 
 # Método que genera la conexión con el servidor mongo
 def link_server():
-    # Conexión a servidor MongoDB
-    client = MongoClient(
-        host='192.168.1.30:27017',  # <-- IP and port go here
-        serverSelectionTimeoutMS=3000,  # 3 second timeout
-        username="kirkdax",
-        password="b*jEeJfM7T*y!X",
-    )
-    return client
+    return MongoClient(mongo_uri)
 
 
 # Método auxiliar para validar un schema (POST y PUT)

@@ -6,7 +6,6 @@ from datetime import datetime
 
 from common_methods import *
 
-
 # Conexión al servidor MongoDB
 client = link_server()
 
