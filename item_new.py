@@ -18,7 +18,7 @@ col = db.item_new
 
 
 # Método para crear un artículo
-def create_item():
+def create_item(id_user):
     """ insertar artículo """
     # obtener datos de la petición (datos json)
     data = request.json
@@ -45,6 +45,9 @@ def create_item():
     # añadir campo con la fecha de creación
     data['creation_date'] = datetime.strptime(datetime.now().strftime(full_regex_date), full_regex_date)
 
+    # añadir campo con la fecha de creación
+    data['user_id'] = id_user
+
     # validar si el contenido json es válido
     is_valid, msg = validate_json('schemas/item/schema_item_new.json', data)
 
@@ -57,7 +60,7 @@ def create_item():
         return response
 
     # comprobar si el artículo introducido existe. (se busca por el campo description)
-    item_exists = col.find_one({'description': request.json['description']})
+    item_exists = col.find_one({'user_id':id_user, 'description': request.json['description']})
 
     # Si el artículo existe (se ha obtenido artículo en la búsqueda)...
     if item_exists != None:
@@ -79,36 +82,29 @@ def create_item():
 
 
 # Método para obtener los artículos
-def get_all_items():
-    return get_all_documents(col)
+def get_all_items(id_user):
+    return get_all_documents(id_user, col)
 
 
 # Método para obtener un artículo
-def get_one_item(id):
-    return get_one_document(id, col)
+def get_one_item(id_user, id_doc):
+    return get_one_document(id_user, id_doc, col)
 
 
 # Método para obtener artículos filtrando por descripción
-def get_items_by_description():
-    return get_documents_by_description(col)
+def get_items_by_description(id_user):
+    return get_documents_by_description(id_user, col)
 
 
 # Método para eliminar un compartimento
-def delete_item(id):
+def delete_item(id_user, id_doc):
     doc_type = 'item'
     col_archive = db_archive.item_archive
-    return delete_document(id, col, doc_type, col_archive)
-
-
-# # Método para actualizar un artículo
-# def update_item(id):
-#     doc_type = 'item'
-#     doc_schema_update = 'schemas/item/schema_item_new_update.json'
-#     return update_document(id, col, doc_type, doc_schema_update)
+    return delete_document(id_user, id_doc, col, doc_type, col_archive)
 
 
 # Método para actualizar un artículo
-def update_item(id):
+def update_item(id_user, id_doc):
     """ insertar artículo """
     # obtener datos de la petición (datos json)
     data = request.json
@@ -149,7 +145,7 @@ def update_item(id):
     # Se comprueba si en la petición existe 'description'
     if 'description' in data:
         # comprobar si existe.
-        doc_exists = col.find_one({'description': request.json['description']})
+        doc_exists = col.find_one({'user_id':id_user, 'description': request.json['description']})
 
         # Si existe (se ha obtenido resultado en la búsqueda)...
         if doc_exists != None:
@@ -157,22 +153,22 @@ def update_item(id):
             item_id_in_data = str(doc_exists['_id'])
 
             # se comprueba si coindice id pasado por parametro e id pasado por body
-            if item_id_in_data != id:
+            if item_id_in_data != id_doc:
                 response = jsonify({'response': 'ERROR. The entered item already exists'})
                 return response
 
-    col.update_one({'_id': ObjectId(id)}, {'$set': data})
+    col.update_one({'user_id':id_user, '_id': ObjectId(id_doc)}, {'$set': data})
 
     response = jsonify({
         'response': 'Item was updated successfully',
-        'item': id
+        'item': id_doc
     })
 
     return response
 
 
 # Método para añadir el embalaje (item) a un artículo (otro item)
-def add_package_to_item(id_item, id_package):
+def add_package_to_item(id_user, id_item, id_package):
     """ se comprueba el id de el artículo introducido por parámetro """
     # se comprueba si el id introducido es válido
     is_valid_id_item = bson.ObjectId.is_valid(id_item)
@@ -201,8 +197,8 @@ def add_package_to_item(id_item, id_package):
         return response
 
     # obtener datos de mongodb (formato bson originalmente)
-    item = col.find_one({'_id': ObjectId(id_item)})
-    package = col.find_one({'_id': ObjectId(id_package)})
+    item = col.find_one({'user_id':id_user, '_id': ObjectId(id_item)})
+    package = col.find_one({'user_id':id_user, '_id': ObjectId(id_package)})
 
     if item == None:
         response = jsonify({
@@ -221,7 +217,7 @@ def add_package_to_item(id_item, id_package):
     # se crea embalaje (diccionario) para el artículo
     data = { 'package': ObjectId(id_package) }
 
-    col.update_one({'_id': ObjectId(id_item)}, {'$set': data})
+    col.update_one({'user_id':id_user, '_id': ObjectId(id_item)}, {'$set': data})
 
     response = jsonify({
         'response': 'Item was updated successfully',
@@ -233,7 +229,7 @@ def add_package_to_item(id_item, id_package):
 
 
 # Método para buscar artículo por cualquier campo definido
-def search_item():
+def search_item(id_user):
     # se crea diccionario desde body json
     data = request.json
 
@@ -244,7 +240,7 @@ def search_item():
     value = list(data.values())[0]
 
     # obtener datos de mongodb (formato bson originalmente)
-    item = col.find({field: {'$regex': value, '$options': 'i'}})
+    item = col.find({'user_id':id_user, field: {'$regex': value, '$options': 'i'}})
 
     # convertir los datos anteriores, de bson a json
     response = json_util.dumps(item)

@@ -87,7 +87,7 @@ def login():
 
 
 @app.route('/signup', methods=['POST'])
-@token_required
+# @token_required
 def signup():
     response = {
         "success": False,
@@ -101,7 +101,7 @@ def signup():
         if name == None or email == None or password == None:
             return response, 202
         if check_email(email) == False:
-            response["message"] = "Invalid email id"
+            response["message"] = "Invalid email address"
             return response, 202
         if check_password(password) == False:
             response["message"] = "Password requirement not fullfilled"
@@ -130,7 +130,7 @@ def check_email(email):
 
 
 def check_password(password):
-    if len(password) >= 6 and len(password) <= 20 and any(char.isdigit() for char in password) \
+    if len(password) >= 8 and len(password) <= 20 and any(char.isdigit() for char in password) \
         and any(char.isupper() for char in password) and any(char.islower() for char in password):
         return True
     else:
@@ -139,95 +139,95 @@ def check_password(password):
 
 """ -------------------- HOME - START -------------------- """
 # Ruta para obtener los hogares
-@app.route('/homes', methods=['GET'])
+@app.route('/homes/<id_user>', methods=['GET'])
 @token_required
-def home_get_all_homes():
-    return get_all_homes()
+def home_get_all_homes(id_user):
+    return get_all_homes(id_user)
 """ -------------------- HOME - END -------------------- """
 
 
 """ -------------------- ROOM - START -------------------- """
 # Ruta para obtener las habitaciones
-@app.route('/rooms', methods=['POST'])
+@app.route('/rooms/<id_user>', methods=['POST'])
 @token_required
-def room_get_all_rooms():
-    return get_all_rooms()
+def room_get_all_rooms(id_user):
+    return get_all_rooms(id_user)
 """ -------------------- ROOM - END -------------------- """
 
 
 """ -------------------- CONTAINER - START -------------------- """
 # Ruta para obtener los contenedores
-@app.route('/containers', methods=['POST'])
+@app.route('/containers/<id_user>', methods=['POST'])
 @token_required
-def container_get_all_containers():
-    return get_all_containers()
+def container_get_all_containers(id_user):
+    return get_all_containers(id_user)
 """ -------------------- CONTAINER - END -------------------- """
 
 
 """ -------------------- COMPARTMENT - START -------------------- """
 # Ruta para obtener los compartimentos
-@app.route('/compartments', methods=['POST'])
+@app.route('/compartments/<id_user>', methods=['POST'])
 @token_required
-def compartment_get_all_compartments():
-    return get_all_compartments()
+def compartment_get_all_compartments(id_user):
+    return get_all_compartments(id_user)
 """ -------------------- COMPARTMENT - END -------------------- """
 
 
 """ -------------------- ITEM - START -------------------- """
 # crear un artículo
-@app.route('/item', methods=['POST'])
+@app.route('/item/<id_user>', methods=['POST'])
 @token_required
-def item_create_item():
-    return create_item()
+def item_create_item(id_user):
+    return create_item(id_user)
 
 
 # obtener todos los artículos
-@app.route('/items', methods=['GET'])
+@app.route('/items/<id_user>', methods=['GET'])
 @token_required
-def item_get_all_items():
-    return get_all_items()
+def item_get_all_items(id_user):
+    return get_all_items(id_user)
 
 
 # obtener un artículo, filtrando por id
-@app.route('/item/<id_item>', methods=['GET'])
+@app.route('/item/<id_user>/<id_item>', methods=['GET'])
 @token_required
-def item_get_one_item(id_item):
-    return get_one_item(id_item)
+def item_get_one_item(id_user, id_item):
+    return get_one_item(id_user, id_item)
 
 
 # obtener los artículos, filtrando por descripción
-@app.route('/item/description', methods=['POST'])
+@app.route('/item/description/<id_user>', methods=['POST'])
 @token_required
-def item_get_items_by_description():
-    return get_items_by_description()
+def item_get_items_by_description(id_user):
+    return get_items_by_description(id_user)
 
 
 # eliminar un artículo, filtrando por id
-@app.route('/item/<id>', methods=['DELETE'])
+@app.route('/item/<id_user>/<id_doc>', methods=['DELETE'])
 @token_required
-def item_delete_item(id):
-    return delete_item(id)
+def item_delete_item(id_user, id_doc):
+    return delete_item(id_user, id_doc)
 
 
 # actualizar un artículo
-@app.route('/item/<id>', methods=['PUT'])
+@app.route('/item/<id_user>/<id_doc>', methods=['PUT'])
 @token_required
-def item_update_item(id):
-    return update_item(id)
+def item_update_item(id_user, id_doc):
+    return update_item(id_user, id_doc)
 
 
 # añadir paquete a un artículo
-@app.route('/item/<id_item>/<id_package>', methods=['PUT'])
+@app.route('/item/<id_user>/<id_item>/<id_package>', methods=['PUT'])
 @token_required
-def item_add_package_to_item(id_item, id_package):
-    return add_package_to_item(id_item, id_package)
+def item_add_package_to_item(id_user, id_item, id_package):
+    return add_package_to_item(id_user, id_item, id_package)
 
 
 # Ruta para realizar búsqueda avanzada de un artículo
-@app.route('/item/search', methods=['POST'])
+@app.route('/item/search/<id_user>', methods=['POST'])
 @token_required
-def item_search_item():
-    return search_item()
+def item_search_item(id_user):
+    return search_item(id_user)
 """ -------------------- ITEM - END -------------------- """
 
 

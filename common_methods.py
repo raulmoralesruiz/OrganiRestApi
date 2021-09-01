@@ -60,9 +60,9 @@ def validate_request_json(url_jsonschema):
 
 ''' ---------- CRUD ---------- '''
 # Método para obtener todos los documentos
-def get_all_documents(col):
+def get_all_documents(id_user, col):
     # obtener datos de mongodb (formato bson originalmente)
-    documents = col.find()
+    documents = col.find({'user_id':id_user})
 
     # convertir los datos anteriores, de bson a json
     response = json_util.dumps(documents)
@@ -72,9 +72,9 @@ def get_all_documents(col):
 
 
 # Método para obtener un documento
-def get_one_document(id, col):
+def get_one_document(id_user, id_doc, col):
     # se comprueba si el documento existe y es válido
-    res, doc = check_document(id, col)
+    res, doc = check_document(id_user, id_doc, col)
     if res != 'ok':
         return jsonify(res)
 
@@ -86,14 +86,15 @@ def get_one_document(id, col):
 
 
 # Método para obtener un documento filtrando por descripción
-def get_documents_by_description(col):
+def get_documents_by_description(id_user, col):
     # se validan los datos de la petición (json)
     data, res = validate_request_json('schemas/schema_search_by_desc.json')
     if res != "ok":
         return jsonify(res)
 
     # filtro para buscar coincidencias en el campo 'description'
-    filter = {'description': {'$regex': request.json['description'], '$options': 'i'}}
+    filter = {'user_id': id_user, 'description': {
+              '$regex': request.json['description'], '$options': 'i'}}
 
     # se realiza la búsqueda con el filtro anterior
     query = col.find(filter=filter)
@@ -127,22 +128,22 @@ def get_father_with_son(col, father):
 
 
 # Método para eliminar un documento
-def delete_document(id, col, doc_type, col_archive):
+def delete_document(id_user, id_doc, col, doc_type, col_archive):
     # se comprueba si el documento existe y es válido
-    res, doc = check_document(id, col)
+    res, doc = check_document(id_user, id_doc, col)
     if res != 'ok':
         return jsonify(res)
 
     # se archiva el documento antes de borrarlo
-    doc = col.find_one({'_id': ObjectId(id)})
+    doc = col.find_one({'_id': ObjectId(id_doc)})
     col_archive.insert_one(doc)
 
     # se borra el documento
-    col.delete_one({'_id': ObjectId(id)})
+    col.delete_one({'_id': ObjectId(id_doc)})
 
     response = jsonify({
         'response': doc_type + ' was deleted successfully',
-        doc_type: id
+        doc_type: id_doc
         })
 
     return response
@@ -198,7 +199,7 @@ def create_document(id_father, col_father, doc_type_father, son_schema, col_son,
 
 
 # Método auxiliar de create_document. Comprueba un documento padre
-def check_document(id_doc, col_doc):
+def check_document(id_user, id_doc, col_doc):
     # se comprueba si el id introducido es válido
     is_valid_id = bson.ObjectId.is_valid(id_doc)
 
@@ -209,18 +210,18 @@ def check_document(id_doc, col_doc):
     # si el id introducido no es válido se muestra mensaje de error
     if not is_valid_id:
         response = {
-            'response': 'The entered id is not valid.',
+            'response': 'The entered id_document is not valid.',
             'status': 'ERROR',
         }
         return response, doc
 
     # obtener diccionario de mongodb (formato bson originalmente)
-    doc = col_doc.find_one({'_id': ObjectId(id_doc)})
+    doc = col_doc.find_one({'user_id':id_user, '_id': ObjectId(id_doc)})
 
     # comprobar si el id pasado por parámetro coincide con algún documento de la base de datos
     if doc == None:
         response = {
-            'response': 'The entered id does not exist.',
+            'response': 'The entered id_document does not exist.',
             'status': 'ERROR',
         }
 

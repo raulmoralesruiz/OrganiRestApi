@@ -14,7 +14,7 @@ doc_type = 'compartment'
 
 
 # Método para obtener las direcciones de los hogares
-def get_all_compartments():
+def get_all_compartments(id_user):
     section = 'compartment'
 
     # se obtiene la descripción (nombre) del hogar
@@ -27,6 +27,6 @@ def get_all_compartments():
     container = request.json['container']
 
     # se define la query
-    query = {'home.description': home, 'room.description': room, 'container.description': container}
+    query = {'user_id':id_user, 'home.description': home, 'room.description': room, 'container.description': container}
 
     return get_section(col_item, section, query)

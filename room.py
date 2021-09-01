@@ -15,13 +15,13 @@ doc_type = 'room'
 
 
 # Método para obtener las habitaciones de los hogares
-def get_all_rooms():
+def get_all_rooms(id_user):
     section = 'room'
 
     # se obtiene la descripción (nombre) de la habitación
     description = request.json['description']
 
     # se define la query
-    query = {'home.description': description}
+    query = {'user_id':id_user, 'home.description': description}
     
     return get_section(col_item, section, query)

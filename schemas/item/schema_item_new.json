@@ -138,6 +138,18 @@
                 "4CE0460D0G"
             ]
         },
+        "user_id": {
+            "$id": "#/properties/user_id",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100,
+            "title": "The user_id schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "xxxxx"
+            ]
+        },
         "purchase_date": {
             "$id": "#/properties/purchase_date",
             "title": "The purchase_date schema",

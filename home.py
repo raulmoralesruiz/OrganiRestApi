@@ -14,7 +14,7 @@ doc_type = 'home'
 
 
 # Método para obtener las descripciones de los hogares
-def get_all_homes():
+def get_all_homes(id_user):
     section = 'home'
-    query = {}
+    query = {'user_id':id_user}
     return get_section(col_item, section, query)
